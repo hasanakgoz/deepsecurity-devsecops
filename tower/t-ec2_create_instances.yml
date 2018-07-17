@@ -23,7 +23,7 @@
                  apt install -y python python-simplejson
       image: ami-5055cd3f
       wait: true
-      count: 3
+      count: 1
       group: orchestration
       vpc_subnet_id: subnet-0e34f3669e7450aa7
       assign_public_ip: no

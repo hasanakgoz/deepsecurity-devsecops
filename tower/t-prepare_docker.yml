@@ -3,9 +3,6 @@
   hosts: tag_env_demo
   become: True
 
-  roles:
-    - { role: "nickjj.docker", tags: "docker" }
-
 - name: Deep Security with iptables
   hosts: tag_env_demo
   tasks:
