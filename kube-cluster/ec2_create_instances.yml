@@ -1,0 +1,112 @@
+---
+- name: Create EC2 instance
+  hosts: localhost
+  gather_facts: False
+  vars:
+    aws:
+      access_key: '{{ lookup("env", "AWS_ACCESS_KEY_ID") }}'
+      secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
+    extra_vars:
+      id_rsa_pub: '{{ lookup("env", "id_rsa_pub") }}'
+      kube_masternode_ip: '{{ lookup("env", "kube_masternode_ip") }}'
+      kube_workernodes_ips: '{{ lookup("env", "kube_workernodes_ips") }}'
+    counter: 1
+
+  tasks:
+  - debug:
+      msg="Creating Master Node {{ kube_masternode_ip }}"
+
+  - name: Create EC2 Instance Kube Master Node
+    ec2:
+      aws_access_key: "{{ aws.access_key }}"
+      aws_secret_key: "{{ aws.secret_key }}"
+      key_name: ansible
+      region: eu-central-1
+      instance_type: t2.large
+      user_data: |
+                 #!/bin/sh
+                 echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt install -y python python-simplejson
+      image: ami-5055cd3f
+      wait: true
+      count: 1
+      group: orchestration
+      vpc_subnet_id: subnet-0e34f3669e7450aa7
+      assign_public_ip: no
+      private_ip: "{{ kube_masternode_ip }}"
+      instance_tags:
+        env: production
+        role: kube_masternode
+    register: ec2
+
+  - debug:
+      msg="Creating Worker Node(s) {{ kube_workernodes_ips }}"
+
+  - name: Create EC2 Instance Kube Worker Nodes
+    ec2:
+      aws_access_key: "{{ aws.access_key }}"
+      aws_secret_key: "{{ aws.secret_key }}"
+      key_name: ansible
+      region: eu-central-1
+      instance_type: t2.medium
+      user_data: |
+                 #!/bin/sh
+                 echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt install -y python python-simplejson
+      image: ami-5055cd3f
+      wait: true
+      count: 1
+      group: orchestration
+      vpc_subnet_id: subnet-0e34f3669e7450aa7
+      assign_public_ip: no
+      private_ip: "{{ item }}"
+      instance_tags:
+        env: production
+        role: kube_workernode
+    with_items: "{{ kube_workernodes_ips }}"
+    register: ec2
+
+  - name: Clean hosts file
+    file:
+      path: ./hosts
+      state: absent
+
+  - debug:
+      msg="Creating hosts file"
+
+  - name: Masters 1
+    lineinfile:
+      path: ./hosts
+      line: "[masters]"
+      create: yes
+
+  - name: Masters 2
+    lineinfile:
+      path: ./hosts
+      line: "master ansible_host={{ kube_masternode_ip }} ansible_user=root"
+
+  - name: Workers 1
+    lineinfile:
+      path: ./hosts
+      line: "[workers]"
+      create: yes
+
+  - name: Workers 2
+    lineinfile:
+      path: ./hosts
+      line: "worker{{ my_idx }} ansible_host={{ item }} ansible_user=root"
+    loop: "{{ kube_workernodes_ips|flatten(levels=1) }}"
+    loop_control:
+      index_var: my_idx
+
+  - name: Vars 1
+    lineinfile:
+      path: ./hosts
+      line: "[all:vars]"
+      create: yes
+
+  - name: Vars 2
+    lineinfile:
+      path: ./hosts
+      line: "ansible_python_interpreter=/usr/bin/python3"
+      create: yes
