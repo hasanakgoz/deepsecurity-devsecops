@@ -1,0 +1,6 @@
+- hosts: tag_role_kube_masternode
+  become: yes
+  become_user: ubuntu
+  tasks:
+    - name: Create kubecfg.p12 and bearer token
+      script: bearertoken.sh
