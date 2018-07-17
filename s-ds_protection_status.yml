@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Get the variables
+    include_vars: vars/secrets.yml
+  - name: Retrieve covered CVEs and MSids
+    script: ds_protection_status.py {{ item }} {{ dsm_user }} {{ dsm_password }}
+    loop:
+      - "{{ private_ip }}"
+    delegate_to: 127.0.0.1
+    register: ds_protection_status
+
+  - debug: 
+      msg="{{ ds_protection_status.results[0]['stdout_lines'] }}"

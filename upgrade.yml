@@ -1,0 +1,22 @@
+---
+- hosts: demo
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Upgrade all packages to the latest version
+    become: true
+    apt:
+      upgrade: yes
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes
+
+  - include_role:
+      name: deep-security.deep-security-agent
+    vars:
+      action: run-recommendation-scans

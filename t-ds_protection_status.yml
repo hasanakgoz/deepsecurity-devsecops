@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    extra_vars:
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      ds_api_user: '{{ lookup("env", "ds_api_user") }}'
+      ds_api_password: '{{ lookup("env", "ds_api_password") }}'
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  tasks:
+  - debug:
+      msg="Target {{ private_ip }}"
+
+  - name: Retrieve covered CVEs and MSids
+    script: ds_protection_status.py {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
+    loop:
+      - "{{ private_ip }}"
+    delegate_to: 127.0.0.1
+    register: ds_protection_status
+
+  - debug: 
+      msg="{{ ds_protection_status.results[0]['stdout_lines'] }}"

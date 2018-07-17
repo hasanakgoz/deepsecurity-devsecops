@@ -1,0 +1,18 @@
+---
+- name: "Configure app server(s)"
+  hosts: tag_env_demo
+  become: True
+
+  roles:
+    - { role: "nickjj.docker", tags: "docker" }
+
+- name: Deep Security with iptables
+  hosts: tag_env_demo
+  tasks:
+  - name: Create use_dsa_with_iptables
+    copy:
+      content: ""
+      dest: /etc/use_dsa_with_iptables
+      force: no
+      owner: root
+      mode: 0666

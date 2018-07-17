@@ -1,0 +1,14 @@
+---
+- hosts: demo
+  roles:
+    - role: deep-security.deep-security-agent
+      action: deploy
+      dsm_agent_download_hostname: starfleet-dsm.hopto.org
+      dsm_agent_download_port: 4119
+      dsm_agent_activation_hostname: starfleet-dsm.hopto.org
+      dsm_agent_activation_port: 4120
+#      tenant_id: 111A111A-1A1A-11AA-AAA-11AA11111111
+#      token | tenant_password: 111A111A-1A1A-11AA-AAA-11AA11111111
+#      policy_id: 44
+#      group_id: 1
+      force_reactivation: true

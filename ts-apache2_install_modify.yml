@@ -1,0 +1,46 @@
+---
+- hosts: "{{ private_ip }}"
+  vars:
+    extra_vars:
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "apache2"
+    apt:
+      name: apache2
+      state: present
+
+- hosts: localhost
+  gather_facts: no
+  vars:
+    extra_vars:
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      ds_api_user: '{{ lookup("env", "ds_api_user") }}'
+      ds_api_password: '{{ lookup("env", "ds_api_password") }}'
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  tasks:
+  - debug:
+      msg="Target {{ private_ip }}"
+      
+  - name: Modify Deep Security Policy for host
+    script: ds_fw_manager.py "Web Server" {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
+    loop:
+      - "{{ private_ip }}"
+    delegate_to: 127.0.0.1
+    register: ds_policy_status
+
+  - debug:
+      msg="{{ ds_policy_status.results[0]['stdout_lines'] }}"
+
+- hosts: "{{ private_ip }}"
+  vars:
+    extra_vars:
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  roles:
+    - role: deep_security.deep-security-agent
+      operation: update-configuration
+    - role: deep_security.deep-security-agent
+      operation: run-recommendation-scans

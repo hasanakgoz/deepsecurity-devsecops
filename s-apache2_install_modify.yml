@@ -1,0 +1,29 @@
+---
+- hosts: "{{ private_ip }}"
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "apache2"
+    apt:
+      name: apache2
+      state: present
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Get the variables
+    include_vars: vars/secrets.yml
+  - name: Modify Deep Security Policy for host
+    script: ds_fw_manager.py "Web Server" {{ item }} {{ dsm_user }} {{ dsm_password }}
+    loop:
+      - "{{ private_ip }}"
+    delegate_to: 127.0.0.1
+
+- hosts: "{{ private_ip }}"
+  roles:
+    - role: deep-security.deep-security-agent
+      action: update-configuration
+    - role: deep-security.deep-security-agent
+      action: run-recommendation-scans

@@ -1,0 +1,5 @@
+---
+- hosts: "{{ private_ip }}"
+  roles:
+    - role: deep-security.deep-security-agent
+      action: get-component-info

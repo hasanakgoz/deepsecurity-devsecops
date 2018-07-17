@@ -1,0 +1,27 @@
+---
+- hosts: "{{ private_ip }}"
+  vars:
+    extra_vars:
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "apache2"
+    apt:
+      name: apache2
+      state: present
+
+- hosts: "{{ private_ip }}"
+  vars:
+    extra_vars:
+      private_ip: '{{ lookup("env", "private_ip") }}'
+  roles:
+    - role: deep_security.deep-security-agent
+      operation: set-policy-by-name
+      policy_name: Ubuntu 16 EC2 Web Server
+    - role: deep_security.deep-security-agent
+      operation: update-configuration
+    - role: deep_security.deep-security-agent
+      operation: run-recommendation-scans

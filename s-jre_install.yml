@@ -1,0 +1,16 @@
+---
+- hosts: "{{ private_ip }}"
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "jre"
+    apt:
+      name: openjdk-8-jre
+      state: present
+
+- hosts: "{{ private_ip }}"
+  roles:
+    - role: deep-security.deep-security-agent
+      action: run-recommendation-scans

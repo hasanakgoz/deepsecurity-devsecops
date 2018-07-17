@@ -1,0 +1,49 @@
+---
+- name: Deep Security with iptables
+  hosts: tag_role_kube_masternode, tag_role_kube_workernode
+  tasks:
+  - name: Create use_dsa_with_iptables
+    copy:
+      content: ""
+      dest: /etc/use_dsa_with_iptables
+      force: no
+      owner: root
+      mode: 0666
+
+- hosts: tag_env_demo, tag_role_kube_masternode, tag_role_kube_workernode
+  vars:
+    extra_vars:
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+
+  roles:
+    - role: deep_security.deep-security-agent
+      action: deploy
+      dsm_agent_download_hostname: "{{ dsm_url }}"
+      dsm_agent_download_port: 4119
+      dsm_agent_activation_hostname: "{{ dsm_url }}"
+      dsm_agent_activation_port: 4120
+#      tenant_id: 111A111A-1A1A-11AA-AAA-11AA11111111
+#      token | tenant_password: 111A111A-1A1A-11AA-AAA-11AA11111111
+#      policy_id: 44
+#      group_id: 1
+      force_reactivation: true
+
+- name: Prepare Facter for Deep Security
+  hosts: tag_env_demo, tag_role_kube_masternode, tag_role_kube_workernode
+  tasks:
+  - name: Update APT cache
+    apt:
+      update_cache: yes
+  - name: Install the latest version of "facter"
+    apt:
+      name: facter
+      state: present
+  - name: "Create custom fact directory"
+    file:
+      path: "/etc/ansible/facts.d"
+      state: "directory"
+  - name: "Insert custom fact file"
+    copy:
+      src: files/dsa_status.fact
+      dest: /etc/ansible/facts.d/dsa_status.fact
+      mode: 0755
