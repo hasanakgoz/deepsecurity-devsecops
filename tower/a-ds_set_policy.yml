@@ -8,13 +8,3 @@
       operation: update-configuration
     - role: ../roles/deep-security.deep-security-agent
       operation: run-recommendation-scans
-
-- hosts: tag_role_kube_masternode, tag_role_kube_workernode
-  roles:
-    - role: ../roles/deep-security.deep-security-agent
-      operation: set-policy-by-name
-      policy_name: Ubuntu 16 EC2 Kubernetes
-    - role: ../roles/deep-security.deep-security-agent
-      operation: update-configuration
-    - role: ../roles/deep-security.deep-security-agent
-      operation: run-recommendation-scans

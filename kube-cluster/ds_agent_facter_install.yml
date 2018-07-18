@@ -1,6 +1,6 @@
 ---
 - name: Deep Security with iptables
-  hosts: tag_env_demo
+  hosts: tag_role_kube_masternode, tag_role_kube_workernode
   tasks:
   - name: Create use_dsa_with_iptables
     copy:
@@ -10,7 +10,7 @@
       owner: root
       mode: 0666
 
-- hosts: tag_env_demo
+- hosts: tag_role_kube_masternode, tag_role_kube_workernode
   vars:
     extra_vars:
       dsm_url: '{{ lookup("env", "dsm_url") }}'
@@ -29,7 +29,7 @@
       force_reactivation: true
 
 - name: Prepare Facter for Deep Security
-  hosts: tag_env_demo
+  hosts: tag_role_kube_masternode, tag_role_kube_workernode
   tasks:
   - name: Update APT cache
     apt:
@@ -47,3 +47,13 @@
       src: files/dsa_status.fact
       dest: /etc/ansible/facts.d/dsa_status.fact
       mode: 0755
+
+- hosts: tag_role_kube_masternode, tag_role_kube_workernode
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: set-policy-by-name
+      policy_name: Ubuntu 16 EC2 Kubernetes
+    - role: ../roles/deep-security.deep-security-agent
+      operation: update-configuration
+    - role: ../roles/deep-security.deep-security-agent
+      operation: run-recommendation-scans
