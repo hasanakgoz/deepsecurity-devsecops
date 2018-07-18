@@ -29,6 +29,6 @@
       state: "directory"
   - name: "Insert custom fact file"
     copy:
-      src: files/dsa_status.fact
+      src: ../files/dsa_status.fact
       dest: /etc/ansible/facts.d/dsa_status.fact
       mode: 0755
