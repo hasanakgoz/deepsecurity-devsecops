@@ -16,7 +16,7 @@
   - name: Get the variables
     include_vars: vars/secrets.yml
   - name: Modify Deep Security Policy for host
-    script: ds_fw_manager.py "Web Server" {{ item }} {{ dsm_user }} {{ dsm_password }}
+    script: ../files/ds_fw_manager.py "Web Server" {{ item }} {{ dsm_user }} {{ dsm_password }}
     loop:
       - "{{ private_ip }}"
     delegate_to: 127.0.0.1

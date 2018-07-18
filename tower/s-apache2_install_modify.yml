@@ -26,7 +26,7 @@
       msg="Target {{ private_ip }}"
       
   - name: Modify Deep Security Policy for host
-    script: ds_fw_manager.py "Web Server" {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
+    script: ../files/ds_fw_manager.py "Web Server" {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
     loop:
       - "{{ private_ip }}"
     delegate_to: 127.0.0.1

@@ -12,7 +12,7 @@
       msg="Target {{ private_ip }}"
 
   - name: Retrieve covered CVEs and MSids
-    script: ds_protection_status.py {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
+    script: ../files/ds_protection_status.py {{ item }} {{ dsm_url }} {{ ds_api_user }} {{ ds_api_password }}
     loop:
       - "{{ private_ip }}"
     delegate_to: 127.0.0.1
