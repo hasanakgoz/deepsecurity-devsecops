@@ -1,0 +1,11 @@
+---
+    
+- name: Terminate tagged instances
+  hosts: tag_env_demo
+  gather_facts: False
+  tasks:
+    - ec2_metadata_facts:
+    - ec2:
+        state: absent
+        region: eu-central-1
+      delegate_to: localhost

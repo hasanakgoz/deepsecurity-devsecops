@@ -1,3 +1,5 @@
 #- src: deep_security.deep-security-agent
 - src: https://github.com/deep-security/ansible
+  version: master
+  name: deep-security.deep-security-agent
 - src: nickjj.docker

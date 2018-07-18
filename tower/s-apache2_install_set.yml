@@ -18,10 +18,10 @@
     extra_vars:
       private_ip: '{{ lookup("env", "private_ip") }}'
   roles:
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: set-policy-by-name
       policy_name: Ubuntu 16 EC2 Web Server
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: update-configuration
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: run-recommendation-scans

@@ -1,20 +1,20 @@
 ---
 - hosts: tag_env_demo
   roles:
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: set-policy-by-name
       policy_name: Ubuntu 16 EC2
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: update-configuration
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: run-recommendation-scans
 
 - hosts: tag_role_kube_masternode, tag_role_kube_workernode
   roles:
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: set-policy-by-name
       policy_name: Ubuntu 16 EC2 Kubernetes
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: update-configuration
-    - role: deep_security.deep-security-agent
+    - role: deep-security.deep-security-agent
       operation: run-recommendation-scans
