@@ -16,7 +16,8 @@
       dsm_url: '{{ lookup("env", "dsm_url") }}'
 
   roles:
-    - role: deep-security.deep-security-agent
+#    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: deploy
       dsm_agent_download_hostname: "{{ dsm_url }}"
       dsm_agent_download_port: 4119
