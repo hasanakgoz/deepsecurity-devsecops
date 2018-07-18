@@ -12,5 +12,5 @@
 
 - hosts: "{{ private_ip }}"
   roles:
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: run-recommendation-scans

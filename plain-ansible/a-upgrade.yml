@@ -17,6 +17,6 @@
       autoremove: yes
 
   - include_role:
-      name: deep-security.deep-security-agent
+      name: ../roles/deep-security.deep-security-agent
     vars:
       action: run-recommendation-scans

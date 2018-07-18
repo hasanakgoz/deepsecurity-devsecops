@@ -40,7 +40,7 @@
     extra_vars:
       private_ip: '{{ lookup("env", "private_ip") }}'
   roles:
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       operation: update-configuration
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       operation: run-recommendation-scans

@@ -1,5 +1,5 @@
 ---
 - hosts: all
   roles:
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: check-in-with-manager

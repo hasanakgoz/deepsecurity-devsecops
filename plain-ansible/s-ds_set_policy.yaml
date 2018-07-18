@@ -1,10 +1,10 @@
 ---
 - hosts: "{{ private_ip }}"
   roles:
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: set-policy
       policy: Ubuntu 16 EC2 Web Server
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: update-configuration
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: run-recommendation-scans

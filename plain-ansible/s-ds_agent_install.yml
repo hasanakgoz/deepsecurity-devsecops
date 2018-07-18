@@ -1,7 +1,7 @@
 ---
 - hosts: "{{ private_ip }}"
   roles:
-    - role: deep-security.deep-security-agent
+    - role: ../roles/deep-security.deep-security-agent
       action: deploy
       dsm_agent_download_hostname: starfleet-dsm.hopto.org
       dsm_agent_download_port: 4119
