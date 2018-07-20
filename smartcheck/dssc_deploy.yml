@@ -1,5 +1,8 @@
 ---
 - hosts: tag_role_kube_masternode
+  vars:
+    extra_vars:
+      activation_code: '{{ lookup("env", "activation_code") }}'
   become: yes
   become_user: ubuntu
   gather_facts: false
@@ -37,7 +40,7 @@
       shell: kubectl create -f /home/ubuntu/smartcheck-helm/gp2-storage-class.yaml
 
     - name: Install DSSC
-      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode=DK-96KU-2WZD8-MEEVG-RTCJL-3J2Y3-WDTUR --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
+      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode={{ "activation_code" }} --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
 
 - hosts: tag_role_kube_workernode
   become: yes
