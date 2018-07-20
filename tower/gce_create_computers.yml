@@ -4,6 +4,7 @@
   vars:
     extra_vars:
       dsm_url: '{{ lookup("env", "dsm_url") }}'
+      api_key: '{{ lookup("env", "api_key") }}'
   tasks:
   - uri:
       url: "https://{{ dsm_url }}:4119/api/computers"
@@ -11,5 +12,5 @@
 	  body: "{ "hostName": {{ inventory_hostname }}, "displayName": {{ inventory_hostname }}, "description": "Created by Ansible", "groupID": 82 }"
 	  headers:
         Content-Type: "application/json"
-        api-secret-key: '4:+y5SkE7jAEG3Jt7hoeKsh34mBONgudoDrYyijLv2XXM='
+        api-secret-key: "{{ api_key }}"
         api-version: "v1"
