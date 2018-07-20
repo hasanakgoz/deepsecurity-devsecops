@@ -6,8 +6,8 @@
       copy:
         src: ../files/bearertoken.sh
         dest: /home/ubuntu
-        owner: foo
-        group: foo
+        owner: ubuntu
+        group: ubuntu
         mode: 0755
 
 - hosts: tag_role_kube_masternode
