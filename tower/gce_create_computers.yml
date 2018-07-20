@@ -7,6 +7,9 @@
       dsm_url: '{{ lookup("env", "dsm_url") }}'
       api_key: '{{ lookup("env", "api_key") }}'
   tasks:
+  - debug:
+      msg: "{{ gce.instance_data.public_ip }}"
+      
   - uri:
       url: "https://{{ dsm_url }}:4119/api/computers"
       method: POST
