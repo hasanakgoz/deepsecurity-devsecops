@@ -77,7 +77,7 @@
             - debug
 
     - name: Create storage class
-      shell: kubectl create -f ~/smartcheck-helm/gp2-storage-class.yaml
+      shell: kubectl create -f /home/ubuntu/smartcheck-helm/gp2-storage-class.yaml
 
 # Install DSSC
     - name: Install DSSC
