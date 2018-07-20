@@ -2,9 +2,6 @@
 - name: Deep Security with iptables
   hosts: all
   tasks:
-  - name: Gather instance GCE facts
-    action: gce_facts
-
   - name: Create use_dsa_with_iptables
     copy:
       content: ""
