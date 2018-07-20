@@ -1,5 +1,4 @@
 ---
-    
 - name: Terminate tagged instances
   hosts: tag_role_kube_masternode, tag_role_kube_workernode
   gather_facts: False
