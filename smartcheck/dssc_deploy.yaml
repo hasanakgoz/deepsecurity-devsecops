@@ -18,6 +18,7 @@
       copy:
         src: /tmp/linux-amd64/helm
         dest: /usr/local/bin/helm
+        remote_src: yes
         owner: root
         group: root
         mode: 0755
