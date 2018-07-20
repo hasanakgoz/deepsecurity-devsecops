@@ -32,17 +32,17 @@
       shell: helm init
 
 # Tiller
-    - name: Create service account for tiller
-      shell: kubectl create serviceaccount --namespace kube-system tiller
+#    - name: Create service account for tiller
+#      shell: kubectl create serviceaccount --namespace kube-system tiller
 
-    - name: Create cluster role binding for tiller
-      shell: kubectl create clusterrolebinding tiller-cluster-role --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+#    - name: Create cluster role binding for tiller
+#      shell: kubectl create clusterrolebinding tiller-cluster-role --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 
-    - name: Configure tiller step 1
-      shell: kubectl patch deploy --namespace kube-system tiller-deploy --patch '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+#    - name: Configure tiller step 1
+#      shell: kubectl patch deploy --namespace kube-system tiller-deploy --patch '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 
-    - name: Configure tiller step 2
-      shell: kubectl -n kube-system patch deployment tiller-deploy -p '{"spec":{"template":{"spec":{"automountServiceAccountToken":true}}}}'
+#    - name: Configure tiller step 2
+#      shell: kubectl -n kube-system patch deployment tiller-deploy -p '{"spec":{"template":{"spec":{"automountServiceAccountToken":true}}}}'
 
 
 # Get DSSC
