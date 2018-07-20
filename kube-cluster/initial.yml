@@ -1,3 +1,4 @@
+---
 - hosts: tag_role_kube_masternode, tag_role_kube_workernode
   vars:
     extra_vars:

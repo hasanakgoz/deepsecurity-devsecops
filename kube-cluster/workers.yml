@@ -1,3 +1,4 @@
+---
 - hosts: tag_role_kube_masternode
   become: yes
   gather_facts: false
@@ -28,6 +29,3 @@
         chdir: $HOME
         creates: node_joined.txt
 #      tags: tag_role_kube_workernode
-
-    - name: set promic on workernodes
-      shell: ip link set cni0 promisc on

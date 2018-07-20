@@ -1,0 +1,52 @@
+---
+- hosts: tag_role_kube_masternode
+  become: yes
+  become_user: ubuntu
+  gather_facts: false
+  tasks:
+    - name: Pull smartcheck helm
+      git:
+        repo: 'https://github.com/deep-security/smartcheck-helm'
+        dest: /home/ubuntu/smartcheck-helm
+
+    - name: Create overrides file
+      copy:
+        dest: "/home/ubuntu/smartcheck-helm/overrides.yaml"
+        content: |
+          service:
+            type: ClusterIP
+          persistence:
+            enabled: false
+
+    - name: Create storage gp2 storage class definition
+      copy:
+        dest: "/home/ubuntu/smartcheck-helm/gp2-storage-class.yaml"
+        content: |
+          kind: StorageClass
+          apiVersion: storage.k8s.io/v1
+          metadata:
+            name: gp2
+          provisioner: kubernetes.io/aws-ebs
+          parameters:
+            type: gp2
+          reclaimPolicy: Retain
+          mountOptions:
+            - debug
+
+    - name: Create storage class
+      shell: kubectl create -f /home/ubuntu/smartcheck-helm/gp2-storage-class.yaml
+
+    - name: Install DSSC
+      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode=DK-96KU-2WZD8-MEEVG-RTCJL-3J2Y3-WDTUR --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
+
+- hosts: tag_role_kube_workernode
+  become: yes
+  tasks:
+    - name: Set promic on workernodes
+      shell: ip link set cni0 promisc on
+
+#export POD_NAME=$(kubectl get pods --namespace smartcheck -l "service=proxy,release=deepsecurity-smartcheck" -o jsonpath="{.items[0].metadata.name}")
+#kubectl port-forward --namespace smartcheck $POD_NAME 8443:8443
+#echo Application URL: https://127.0.0.1:8443
+#echo Username: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.userName }' deepsecurity-smartcheck-auth | base64 --decode)
+#echo Password: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.password }' deepsecurity-smartcheck-auth | base64 --decode)

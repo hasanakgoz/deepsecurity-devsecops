@@ -1,3 +1,4 @@
+---
 - hosts: tag_role_kube_masternode
   become: yes
   tasks:
