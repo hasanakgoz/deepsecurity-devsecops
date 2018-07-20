@@ -18,8 +18,16 @@
         src: /home/ubuntu/dot_kube.tar.bz2
         dest: /tmp
 
+    - name: Copy token script to master
+      copy:
+        src: ../files/bearertoken.sh
+        dest: /home/ubuntu
+        owner: foo
+        group: foo
+        mode: 0755
+
     - name: Get bearer token
-      shell: ../files/bearertoken.sh
+      shell: /home/ubuntu/bearertoken.sh
 
     - name: Fetch bearer token
       fetch:
