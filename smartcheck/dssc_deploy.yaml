@@ -81,7 +81,7 @@
 
 # Install DSSC
     - name: Install DSSC
-      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode=DK-96KU-2WZD8-MEEVG-RTCJL-3J2Y3-WDTUR --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml .
+      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode=DK-96KU-2WZD8-MEEVG-RTCJL-3J2Y3-WDTUR --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
 
 #export POD_NAME=$(kubectl get pods --namespace smartcheck -l "service=proxy,release=deepsecurity-smartcheck" -o jsonpath="{.items[0].metadata.name}")
 #kubectl port-forward --namespace smartcheck $POD_NAME 8443:8443
