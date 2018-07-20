@@ -15,4 +15,5 @@
         Content-Type: "application/json"
         api-secret-key: "{{ api_key }}"
         api-version: "v1"
+    validate_certs: no
     delegate_to: 127.0.0.1
