@@ -21,7 +21,7 @@
         dest: /home/ubuntu/dot_kube.tar.bz2
         format: bz2
 
-    - name: Get bearer token
+    - name: Create kubecfg.p12 and bearer token
       shell: /home/ubuntu/bearertoken.sh
 
 - hosts: tag_role_kube_masternode

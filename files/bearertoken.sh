@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # get p12 with client-certificate-data and client-key-data
-grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d > kubecfg.crt
+grep 'client-certificate-data' /home/ubuntu/.kube/config | head -n 1 | awk '{print $2}' | base64 -d > /home/ubuntu/kubecfg.crt
 
-grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d > kubecfg.key
+grep 'client-key-data' /home/ubuntu/.kube/config | head -n 1 | awk '{print $2}' | base64 -d > /home/ubuntu/kubecfg.key
 
-openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name "kubernetes-client" -passout pass:
+openssl pkcs12 -export -clcerts -inkey /home/ubuntu/kubecfg.key -in /home/ubuntu/kubecfg.crt -out /home/ubuntu/kubecfg.p12 -name "kubernetes-client" -passout pass:
 # import the kubecfg.p12 certificate, reopen your browser
 
 # create service acc
@@ -34,4 +34,4 @@ subjects:
 EOF
 
 # get the bearer token
-kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') > admintoken.txt
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') > /home/ubuntu/admintoken.txt
