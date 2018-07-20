@@ -10,8 +10,9 @@
 
     - name: Extract helm into /tmp
       unarchive:
-        remote_src: /tmp/helm-v2.9.1-linux-amd64.tar.gz
+        src: /tmp/helm-v2.9.1-linux-amd64.tar.gz
         dest: /tmp
+        remote_src: yes
 
     - name: Copy helm binary to /usr/local/bin
       copy:
