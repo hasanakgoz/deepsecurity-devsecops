@@ -1,0 +1,26 @@
+---
+- hosts: tag_role_kube_masternode
+  vars:
+    extra_vars:
+      activation_code: '{{ lookup("env", "activation_code") }}'
+  become: yes
+  become_user: ubuntu
+  gather_facts: false
+  tasks:
+    - name: Create a bz2 archive of .kube
+      archive:
+        path:
+        - /home/ubuntu/.kube
+        dest: /home/ubuntu/dot_kube.tar.bz2
+        format: bz2
+
+    - name: Fetch .kube config package
+      fetch: /home/ubuntu/dot_kube.tar.bz2
+      dest: /tmp
+
+    - name: Get bearer token
+      shell: ../files/bearertoken.sh
+
+    - name: Fetch bearer token
+      fetch: /home/ubuntu/admintoken.txt
+      dest: /tmp
