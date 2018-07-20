@@ -1,8 +1,16 @@
 ---
 - hosts: tag_role_kube_masternode
-  vars:
-    extra_vars:
-      activation_code: '{{ lookup("env", "activation_code") }}'
+  gather_facts: false
+  tasks:
+    - name: Copy token script to master
+      copy:
+        src: ../files/bearertoken.sh
+        dest: /home/ubuntu
+        owner: foo
+        group: foo
+        mode: 0755
+
+- hosts: tag_role_kube_masternode
   become: yes
   become_user: ubuntu
   gather_facts: false
@@ -13,21 +21,16 @@
         dest: /home/ubuntu/dot_kube.tar.bz2
         format: bz2
 
+    - name: Get bearer token
+      shell: /home/ubuntu/bearertoken.sh
+
+- hosts: tag_role_kube_masternode
+  gather_facts: false
+  tasks:
     - name: Fetch .kube config package
       fetch: 
         src: /home/ubuntu/dot_kube.tar.bz2
         dest: /tmp
-
-    - name: Copy token script to master
-      copy:
-        src: ../files/bearertoken.sh
-        dest: /home/ubuntu
-        owner: foo
-        group: foo
-        mode: 0755
-
-    - name: Get bearer token
-      shell: /home/ubuntu/bearertoken.sh
 
     - name: Fetch bearer token
       fetch:
