@@ -49,12 +49,12 @@
     - name: Pull smartcheck helm
       git:
         repo: 'https://github.com/deep-security/smartcheck-helm'
-        dest: ~ 
+        dest: /home/ubuntu
 
   # Overrides
     - name: Create overrides file
       copy:
-        dest: "~/smartcheck-helm/overrides.yaml"
+        dest: "/home/ubuntu/smartcheck-helm/overrides.yaml"
         content: |
           service:
             type: ClusterIP
@@ -63,7 +63,7 @@
 
     - name: Create storage gp2 storage class definition
       copy:
-        dest: "~/smartcheck-helm/gp2-storage-class.yaml"
+        dest: "/home/ubuntu/smartcheck-helm/gp2-storage-class.yaml"
         content: |
           kind: StorageClass
           apiVersion: storage.k8s.io/v1
