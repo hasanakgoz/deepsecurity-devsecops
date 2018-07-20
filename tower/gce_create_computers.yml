@@ -1,5 +1,6 @@
 ---
 - name: Deep Security with iptables
+  gather_facts: no
   hosts: all
   vars:
     extra_vars:
