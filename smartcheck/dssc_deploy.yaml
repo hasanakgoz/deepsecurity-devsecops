@@ -49,7 +49,7 @@
     - name: Pull smartcheck helm
       git:
         repo: 'https://github.com/deep-security/smartcheck-helm'
-        dest: /home/ubuntu/
+        dest: /home/ubuntu/smartcheck-helm
 
   # Overrides
     - name: Create overrides file
