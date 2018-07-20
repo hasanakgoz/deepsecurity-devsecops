@@ -11,7 +11,7 @@
       url: "https://{{ dsm_url }}:4119/api/computers"
       method: POST
       validate_certs: no
-      body: '{ "hostName": {{ inventory_hostname }}, "displayName": {{ inventory_hostname }}, "description": "Created by Ansible", "groupID": 82 }'
+      body: "{ hostName: {{ inventory_hostname }}, displayName: {{ inventory_hostname }}, description: Created by Ansible, groupID: 82 }"
       headers:
         Content-Type: "application/json"
         api-secret-key: "{{ api_key }}"
