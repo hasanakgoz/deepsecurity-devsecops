@@ -49,7 +49,7 @@
 - hosts: tag_role_kube_masternode
   become: yes
   tasks:
-    - debug:
+  - debug:
       msg:
         - "# Access Smartcheck:"
         - "export POD_NAME=$(kubectl get pods --namespace smartcheck -l 'service=proxy,release=deepsecurity-smartcheck' -o jsonpath='{.items[0].metadata.name}')"
@@ -57,7 +57,7 @@
         - "echo Application URL: https://127.0.0.1:8443"
         - "echo Username: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.userName }' deepsecurity-smartcheck-auth | base64 --decode)"
 
-    - debug:
+  - debug:
       msg:
         - "# Change Activation Code:"
         - "helm upgrade --set activationCode=<CODE> --values overrides.yaml --set auth.masterPassword=<PASSWORD> deepsecurity-smartcheck ."
