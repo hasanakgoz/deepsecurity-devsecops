@@ -18,8 +18,6 @@
         content: |
           service:
             type: ClusterIP
-          persistence:
-            enabled: false
 
     - name: Create storage gp2 storage class definition
       copy:
@@ -55,7 +53,6 @@
       msg:
         - "# Access Smartcheck:"
         - "export POD_NAME=$(kubectl get pods --namespace smartcheck -l 'service=proxy,release=deepsecurity-smartcheck' -o jsonpath='{.items[0].metadata.name}')"
-        
         - "kubectl port-forward --namespace smartcheck $POD_NAME 8443:8443"
         - "echo Application URL: https://127.0.0.1:8443"
         - "echo Username: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.userName }' deepsecurity-smartcheck-auth | base64 --decode)"
