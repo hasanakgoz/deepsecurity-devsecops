@@ -18,6 +18,8 @@
         content: |
           service:
             type: ClusterIP
+          persistence:
+            enabled: false
 
     - name: Create storage gp2 storage class definition
       copy:
