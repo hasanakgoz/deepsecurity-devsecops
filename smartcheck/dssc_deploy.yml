@@ -74,6 +74,7 @@
         - "kubectl port-forward --namespace smartcheck $POD_NAME 8443:8443"
         - "echo Application URL: https://127.0.0.1:8443"
         - "echo Username: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.userName }' deepsecurity-smartcheck-auth | base64 --decode)"
+        - "echo Password: $(kubectl get --namespace smartcheck secrets -o jsonpath='{.data.password }' deepsecurity-smartcheck-auth | base64 --decode)"
 
   - debug:
       msg:
