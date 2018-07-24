@@ -21,6 +21,10 @@
           persistence:
             enabled: false
 
+    - name: Debug
+      debug:
+        - msg: 'Used Activation Code: {{ "activation_code" }}'
+
     - name: Install DSSC
       shell: helm install --namespace smartcheck --set auth.masterPassword=trendmicro --set activationCode={{ "activation_code" }} --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
 
