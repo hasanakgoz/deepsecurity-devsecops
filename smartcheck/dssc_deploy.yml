@@ -21,42 +21,8 @@
           persistence:
             enabled: false
 
-    - name: Create storage gp2 storage class definition
-      copy:
-        dest: "/home/ubuntu/smartcheck-helm/local-storage-class.yaml"
-        content: |
-          kind: StorageClass
-          apiVersion: storage.k8s.io/v1
-          metadata:
-            name: local-storage
-          provisioner: kubernetes.io/no-provisioner
-          volumeBindingMode: WaitForFirstConsumer
-
-    - name: Create storage class
-      shell: kubectl create -f /home/ubuntu/smartcheck-helm/local-storage-class.yaml
-
-
-#    - name: Create storage gp2 storage class definition
-#      copy:
-#        dest: "/home/ubuntu/smartcheck-helm/gp2-storage-class.yaml"
-#        content: |
-#          kind: StorageClass
-#          apiVersion: storage.k8s.io/v1
-#          metadata:
-#            name: gp2
-#          provisioner: kubernetes.io/aws-ebs
-#          parameters:
-#            type: gp2
-#          reclaimPolicy: Retain
-#          mountOptions:
-#            - debug
-
-#    - name: Create storage class
-#      shell: kubectl create -f /home/ubuntu/smartcheck-helm/gp2-storage-class.yaml
-
     - name: Install DSSC
-      shell: helm install --namespace smartcheck --set persistence.storageClassName=local-storage --set auth.masterPassword=trendmicro --set activationCode={{ "activation_code" }} --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
-#      shell: helm install --namespace smartcheck --set persistence.storageClassName=gp2 --set auth.masterPassword=trendmicro --set activationCode={{ "activation_code" }} --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
+      shell: helm install --namespace smartcheck --set auth.masterPassword=trendmicro --set activationCode={{ "activation_code" }} --name deepsecurity-smartcheck --values /home/ubuntu/smartcheck-helm/overrides.yaml /home/ubuntu/smartcheck-helm
 
 - hosts: tag_role_kube_workernode
   become: yes
