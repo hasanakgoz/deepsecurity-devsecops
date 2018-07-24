@@ -1,14 +1,20 @@
 ---
 - name: Deep Security
-  gather_facts: no
+#  gather_facts: no
   hosts: all
   vars:
     extra_vars:
       dsm_url: '{{ lookup("env", "dsm_url") }}'
       api_key: '{{ lookup("env", "api_key") }}'
   tasks:
-  - debug:
-      msg: "{{ project_id }}"
+  - name: tagging
+    gce_tag:
+      instance_name: "{{ inventory_hostname }}"
+      project_id: erudite-variety-209408
+      tags: dsa_no
+      state: present
+    environment:
+      PYTHONPATH: "/usr/lib/python2.7/site-packages"
 
 #  - uri:
 #     url: "https://{{ dsm_url }}:4119/api/computers"
