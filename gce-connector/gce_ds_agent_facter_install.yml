@@ -47,3 +47,24 @@
       src: ../files/dsa_status.fact
       dest: /etc/ansible/facts.d/dsa_status.fact
       mode: 0755
+
+- name: Prepare Facter for Deep Security
+  hosts: tag_dsano
+  tasks:
+  - name: tagging is dsa installed
+    gce_tag:
+      instance_name: "{{ inventory_hostname }}"
+      zone: "{{ zone }}"
+      project_id: "{{ project_id }}"
+      tags: dsayes
+      state: present
+    delegate_to: 127.0.0.1
+
+  - name: tagging is dsa installed
+    gce_tag:
+      instance_name: "{{ inventory_hostname }}"
+      zone: "{{ zone }}"
+      project_id: "{{ project_id }}"
+      tags: dsano
+      state: absent
+    delegate_to: 127.0.0.1
