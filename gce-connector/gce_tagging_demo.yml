@@ -23,42 +23,42 @@
       path: /opt/ds_agent/dsa_control
     register: stat_result
 
-  - name: tagging if no dsa
-    gce_tag:
-      instance_name: "{{ inventory_hostname }}"
-      zone: "{{ zone }}"
-      project_id: "{{ project_id }}"
-      tags: dsano
-      state: present
+  - block:
+    - name: tagging if no dsa
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsano
+        state: present
+      delegate_to: 127.0.0.1
+
+    - name: tagging if no dsa
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsayes
+        state: absent
+      delegate_to: 127.0.0.1
     when: stat_result.stat.exists == False
-    delegate_to: 127.0.0.1
+  
+  - block:
+    - name: tagging is dsa installed
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsayes
+        state: present
+      delegate_to: 127.0.0.1
 
-  - name: tagging if no dsa
-    gce_tag:
-      instance_name: "{{ inventory_hostname }}"
-      zone: "{{ zone }}"
-      project_id: "{{ project_id }}"
-      tags: dsayes
-      state: absent
-    when: stat_result.stat.exists == False
-    delegate_to: 127.0.0.1
-
-  - name: tagging is dsa installed
-    gce_tag:
-      instance_name: "{{ inventory_hostname }}"
-      zone: "{{ zone }}"
-      project_id: "{{ project_id }}"
-      tags: dsayes
-      state: present
+    - name: tagging is dsa installed
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsano
+        state: absent
+      delegate_to: 127.0.0.1
     when: stat_result.stat.exists == True
-    delegate_to: 127.0.0.1
-
-  - name: tagging is dsa installed
-    gce_tag:
-      instance_name: "{{ inventory_hostname }}"
-      zone: "{{ zone }}"
-      project_id: "{{ project_id }}"
-      tags: dsano
-      state: absent
-    when: stat_result.stat.exists == True
-    delegate_to: 127.0.0.1

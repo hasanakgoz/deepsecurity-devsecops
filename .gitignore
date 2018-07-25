@@ -4,3 +4,4 @@ kube-cluster/.DS_Store
 vars/secrets.yml
 .DS_Store
 tower/awx error because of requirements.txt
+gce-connector/scratch.json
