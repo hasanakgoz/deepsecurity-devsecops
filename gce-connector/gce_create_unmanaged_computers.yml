@@ -18,7 +18,7 @@
     register: stat_result
 
   - block:
-    - name: Computer already exists in DS?
+    - name: Test for computer already exists in DS
       uri:
         url: "https://{{ dsm_url }}:4119/api/computers/search"
         method: POST
@@ -32,7 +32,7 @@
       delegate_to: 127.0.0.1
 
     - block:
-      - name: Create Computer in DS
+      - name: Create computer in DS
          uri:
           url: "https://{{ dsm_url }}:4119/api/computers"
           method: POST
