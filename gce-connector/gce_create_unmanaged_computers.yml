@@ -42,7 +42,7 @@
     delegate_to: 127.0.0.1
 
   - debug:
-      msg: search_result.json.computers.hostName
+      msg: search_result.json.computers["hostName"]
 
   - uri:
       url: "https://{{ dsm_url }}:4119/api/computers"
