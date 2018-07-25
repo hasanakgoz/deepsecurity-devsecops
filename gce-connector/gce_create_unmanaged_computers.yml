@@ -4,13 +4,10 @@
   hosts: all
   vars:
     extra_vars:
-#      service_account_email: '{{ lookup("env", "service_account_email" }}'
-#      credentials_file: '{{ lookup("env", "credentials_file" }}'
       zone: '{{ lookup("env", "zone" }}'
       project_id: '{{lookup("env", "project_id" }}'
       dsm_url: '{{ lookup("env", "dsm_url") }}'
       api_key: '{{ lookup("env", "api_key") }}'
-
   tasks:
   - name: Test for installed DSA
     stat:

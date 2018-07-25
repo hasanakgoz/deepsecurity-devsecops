@@ -50,6 +50,10 @@
 
 - name: Prepare Facter for Deep Security
   hosts: tag_dsano
+  vars:
+    extra_vars:
+      zone: '{{ lookup("env", "zone" }}'
+      project_id: '{{lookup("env", "project_id" }}'
   tasks:
   - name: tagging is dsa installed
     gce_tag:
