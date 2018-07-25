@@ -27,6 +27,23 @@
       path: /opt/ds_agent/dsa_control
     register: stat_result
 
+  - name: DS computer already exists?
+    uri:
+      url: "https://{{ dsm_url }}:4119/api/computers/search"
+      method: POST
+      validate_certs: no
+      body: ' { "maxItems": 2, "searchCriteria": [ { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}" }}'
+      headers:
+        Content-Type: "application/json"
+        api-secret-key: "{{ api_key }}"
+        api-version: "v1"
+    when: stat_result.stat.exists == False
+    register: search_result
+    delegate_to: 127.0.0.1
+
+  - debug:
+      msg: search_result
+
   - uri:
       url: "https://{{ dsm_url }}:4119/api/computers"
       method: POST
