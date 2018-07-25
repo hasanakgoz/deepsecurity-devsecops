@@ -23,7 +23,7 @@
         url: "https://{{ dsm_url }}:4119/api/computers/search"
         method: POST
         validate_certs: no
-        body: ' { "maxItems": 1, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "{{ inventory_hostname }}.{{ project_id }}" } ] }'
+        body: ' { "maxItems": 1, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "{{ inventory_hostname }}.c.{{ project_id }}.internal" } ] }'
         headers:
           Content-Type: "application/json"
           api-secret-key: "{{ api_key }}"
@@ -37,7 +37,7 @@
           url: "https://{{ dsm_url }}:4119/api/computers"
           method: POST
           validate_certs: no
-          body: ' { "hostName": "{{ inventory_hostname }}.{{ project_id }}", "description": "Created by Ansible", "groupID": 82 }'
+          body: ' { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}.internal", "description": "Created by Ansible", "groupID": 82 }'
           # "displayName": "{{ inventory_hostname }}",
           #,   "noConnectorVirtualMachineSummary": { "accountID": "{{ project_id }}", "directoryID": "noDir", "userName": "{{ service_account_email }}", "instanceID": "noID", "region": "{{ zone }}"}
           headers:
