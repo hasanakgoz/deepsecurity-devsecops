@@ -30,6 +30,14 @@
           api-version: "v1"
       register: search_result
       delegate_to: 127.0.0.1
+  
+  #"noConnectorVirtualMachineSummary": {
+  #  "accountID": "string",
+  #  "directoryID": "string",
+  #  "userName": "string",
+  #  "instanceID": "string",
+  #  "region": "string"
+  #},
 
     - block:
       - name: Create computer in DS
@@ -37,7 +45,7 @@
           url: "https://{{ dsm_url }}:4119/api/computers"
           method: POST
           validate_certs: no
-          body: ' { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}", "displayName": "{{ inventory_hostname }}", "description": "Created by Ansible", "groupID": 82 }'
+          body: ' { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}", "displayName": "{{ inventory_hostname }}", "description": "Created by Ansible", "groupID": 82,   "noConnectorVirtualMachineSummary": { "accountID": "{{ project_id }}", "directoryID": "noDir", "userName": "{{ service_account_email }}", "instanceID": "noID", "region": "{{ zone }}"} }'
           headers:
             Content-Type: "application/json"
             api-secret-key: "{{ api_key }}"
