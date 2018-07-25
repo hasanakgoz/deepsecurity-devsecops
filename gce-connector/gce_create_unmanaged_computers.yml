@@ -1,0 +1,40 @@
+---
+- name: Deep Security
+  gather_facts: no
+  hosts: all
+  vars:
+    extra_vars:
+      service_account_email: '{{ lookup("env", "service_account_email" }}'
+      credentials_file: '{{ lookup("env", "credentials_file" }}'
+      zone: '{{ lookup("env", "zone" }}'
+      project_id: '{{lookup("env", "project_id" }}'
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      api_key: '{{ lookup("env", "api_key") }}'
+#  - uri:
+#     url: "https://{{ dsm_url }}:4119/api/computers"
+#      method: POST
+#      validate_certs: no
+#      body: ' { "hostName": "{{ inventory_hostname }}", "displayName": "{{ inventory_hostname }}", "description": "Created by Ansible", "groupID": 82 }'
+#      headers:
+#        Content-Type: "application/json"
+#        api-secret-key: "{{ api_key }}"
+#        api-version: "v1"
+#    delegate_to: 127.0.0.1
+
+  tasks:
+  - name: test for dsa
+    stat:
+      path: /opt/ds_agent/dsa_control
+    register: stat_result
+
+  - uri:
+      url: "https://{{ dsm_url }}:4119/api/computers"
+      method: POST
+      validate_certs: no
+      body: ' { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}", "displayName": "{{ inventory_hostname }}", "description": "Created by Ansible", "groupID": 82 }'
+      headers:
+        Content-Type: "application/json"
+        api-secret-key: "{{ api_key }}"
+        api-version: "v1"
+    when: stat_result.stat.exists == False
+    delegate_to: 127.0.0.1
