@@ -4,8 +4,6 @@
   hosts: all
   vars:
     extra_vars:
-      service_account_email: '{{ lookup("env", "service_account_email" }}'
-      credentials_file: '{{ lookup("env", "credentials_file" }}'
       zone: '{{ lookup("env", "zone" }}'
       project_id: '{{lookup("env", "project_id" }}'
   tasks:
