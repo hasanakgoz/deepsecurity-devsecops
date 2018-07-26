@@ -29,12 +29,26 @@
       delegate_to: 127.0.0.1
 
     - block:
+      - name: Get FQDN of host
+        shell: hostname -f
+        register: fqdn_raw
+
+      - debug:
+          msg: fqdn "{{ fqdn_raw }}"
+
+      - name: Set FQDN fact
+        set_fact:
+          fqdn: "{{ fqdn_raw.stdout_lines[0] }}"
+
+      - debug:
+          msg: computer zone "{{ gce_zone }}"
+
       - name: Create computer in DS
         uri:
           url: "https://{{ dsm_url }}:4119/api/computers"
           method: POST
           validate_certs: no
-          body: ' { "hostName": "{{ inventory_hostname }}.c.{{ project_id }}.internal", "description": "Created by Ansible", "groupID": 82 }'
+          body: ' { "hostName": "{{ fqdn }}", "description": "Created by Ansible ({{ gce_zone }}", "groupID": 84 }'
           # "displayName": "{{ inventory_hostname }}",
           #,   "noConnectorVirtualMachineSummary": { "accountID": "{{ project_id }}", "directoryID": "noDir", "userName": "{{ service_account_email }}", "instanceID": "noID", "region": "{{ zone }}"}
           headers:
@@ -43,4 +57,3 @@
             api-version: "v1"
         delegate_to: 127.0.0.1
       when: search_result.json.computers == []
-    when: stat_result.stat.exists == False
