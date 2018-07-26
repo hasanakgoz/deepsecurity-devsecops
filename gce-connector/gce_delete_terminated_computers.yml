@@ -24,7 +24,14 @@
 
   - name: Set computers list fact
     set_fact:
-      computers: "{{ search_result.json.computers == [] }}"
+      computers: "{{ search_result.json.computers }}"
+
+  - debug:
+      msg: Computers "{{ computers }}"
+
+  - debug:
+      msg: Computers 2 "{{ item }}"
+    with_items: computers['hostName']
 
 - name: Query GCE inventory for DS registered project hosts
   gather_facts: no
@@ -37,7 +44,7 @@
       api_key: '{{ lookup("env", "api_key") }}'
   tasks:
   - debug:
-      msg: "{{ computers }}"
+      msg: "{{ hostvars['localhost'].computers }}"
 
   - name: Test if computer exists in gce project
     debug:
