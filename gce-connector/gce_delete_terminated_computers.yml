@@ -14,7 +14,7 @@
       url: "https://{{ dsm_url }}:4119/api/computers/search"
       method: POST
       validate_certs: no
-      body: ' { "maxItems": 5000, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "contain", "stringValue": "{{ project_id }}" } ] }'
+      body: ' { "maxItems": 5000, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "%{{ project_id }}%", "stringWildcards": "true" } ] }'
       headers:
         Content-Type: "application/json"
         api-secret-key: "{{ api_key }}"
