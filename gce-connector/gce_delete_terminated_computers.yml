@@ -1,7 +1,7 @@
 ---
-- name: Deep Security
+- name: Deep Security query for registered project hosts
   gather_facts: no
-  hosts: all
+  hosts: localhost
   vars:
     extra_vars:
       zone: '{{ lookup("env", "zone" }}'
@@ -21,6 +21,23 @@
         api-version: "v1"
     register: search_result
     delegate_to: 127.0.0.1
+
+  - name: Set computers list fact
+    set_fact:
+      computers: "{{ search_result.json.computers == [] }}"
+
+- name: Query GCE inventory for DS registered project hosts
+  gather_facts: no
+  hosts: all
+  vars:
+    extra_vars:
+      zone: '{{ lookup("env", "zone" }}'
+      project_id: '{{lookup("env", "project_id" }}'
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      api_key: '{{ lookup("env", "api_key") }}'
+  tasks:
+  - debug:
+      msg: "{{ computers }}"
 
   - name: Test if computer exists in gce project
     debug:
