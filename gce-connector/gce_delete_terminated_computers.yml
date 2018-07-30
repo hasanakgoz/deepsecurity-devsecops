@@ -24,18 +24,24 @@
 
   - name: Set computers list fact
     set_fact:
-      computers: "{{ search_result.json }}"
+      dsc: "{{ search_result.json }}"
 
-  - debug:
-      msg: Computers "{{ computers }}"
+  - name: Iterate JSON
+    set_fact:
+      ds_computer_item: "{{ item.hostName }}"
+    with_items: "{{ dsc.computers }}"
+    register: dsc_list
 
-  - debug:
-      msg: Computers 2 "{{ item }}"
-    with_items: computers['hostName']
+  - name: Create Fact List
+    set_fact:
+      dscs: "{{ dsc_list.results | map(attribute='ansible_facts.ds_computer_item') | list }}"
+
+  - name: Print Fact
+    debug: var=dscs
 
 - name: Query GCE inventory for DS registered project hosts
   gather_facts: no
-  hosts: all
+  hosts: localhost
   vars:
     extra_vars:
       zone: '{{ lookup("env", "zone" }}'
@@ -43,13 +49,47 @@
       dsm_url: '{{ lookup("env", "dsm_url") }}'
       api_key: '{{ lookup("env", "api_key") }}'
   tasks:
-  - debug:
-      msg: "{{ hostvars['localhost'].computers }}"
+  - name: Set computers list fact
+    set_fact:
+      gcec: "{{ hostvars }}"
 
-  - name: Test if computer exists in gce project
-    debug:
-      msg: "{{ item }}"
-    with_inventory_hostnames:
-      - all: instance
+  # Here I'd need to know the FQDN, but gce does only provide the short name. Needs to be fixed
+  - name: Iterate JSON
+    set_fact:
+      gce_computer_item: "{{ item }}.c.erudite-variety-209408.internal"
+    with_items: "{{ gcec }}"
+    register: gcec_list
 
-#     when: search_result.json.computers == []
+  - name: Create Fact List
+    set_fact:
+      gcecs: "{{ gcec_list.results | map(attribute='ansible_facts.gce_computer_item') | list }}"
+
+  - name: Print Fact
+    debug: var=gcecs
+
+- name: Delete non-existing computers from Deep Security
+  gather_facts: no
+  hosts: localhost
+  vars:
+    extra_vars:
+      zone: '{{ lookup("env", "zone" }}'
+      project_id: '{{lookup("env", "project_id" }}'
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      api_key: '{{ lookup("env", "api_key") }}'
+  tasks:
+  - name: DEBUG delete computers
+    debug: var=item
+    with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
+
+  - name: Get IDs of to be deleted computers in Deep Security and delete the computers
+    include: gce_ds_delete_computer.yml computer={{ item }}
+    delegate_to: 127.0.0.1
+    with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
+
+#  - name: DSCS still known
+#    debug:
+#      msg: "{{ hostvars['localhost'].dscs }}"
+
+#  - name: GCECS still known
+#    debug:
+#      msg: "{{ hostvars['localhost'].gcecs }}"
