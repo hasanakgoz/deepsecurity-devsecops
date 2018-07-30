@@ -3,7 +3,6 @@
     url: "https://{{ dsm_url }}:4119/api/computers/search"
     method: POST
     validate_certs: no
-    #body: ' { "maxItems": 5000, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "%{{ project_id }}%", "stringWildcards": "true" } ] }'
     body: ' { "maxItems": 1, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "{{ computer }}" } ] }'
     headers:
       Content-Type: "application/json"
@@ -29,14 +28,13 @@
 - name: Print Fact
   debug: var=dscs
 
-#    - name: Delete computer in Deep Security
-#      uri:
-#        url: "https://{{ dsm_url }}:4119/api/computers/"
-#        method: DELETE
-#        validate_certs: no
+- name: Delete computer in Deep Security
+  uri:
+    url: "https://{{ dsm_url }}:4119/api/computers/{{ dscs }}"
+    method: DELETE
+    validate_certs: no
 ##        body: ' { "maxItems": 5000, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "%{{ project_i$
-#        headers:
-#          Content-Type: "application/json"
-#          api-secret-key: "{{ api_key }}"
-#          api-version: "v1"
- #   with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
+    headers:
+      Content-Type: "application/json"
+      api-secret-key: "{{ api_key }}"
+      api-version: "v1"

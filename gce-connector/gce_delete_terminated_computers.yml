@@ -36,8 +36,8 @@
     set_fact:
       dscs: "{{ dsc_list.results | map(attribute='ansible_facts.ds_computer_item') | list }}"
 
-  - name: Print Fact
-    debug: var=dscs
+#  - name: Print Fact
+#    debug: var=dscs
 
 - name: Query GCE inventory for DS registered project hosts
   gather_facts: no
@@ -64,8 +64,8 @@
     set_fact:
       gcecs: "{{ gcec_list.results | map(attribute='ansible_facts.gce_computer_item') | list }}"
 
-  - name: Print Fact
-    debug: var=gcecs
+#  - name: Print Fact
+#    debug: var=gcecs
 
 - name: Delete non-existing computers from Deep Security
   gather_facts: no
@@ -87,11 +87,3 @@
     with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
     loop_control:
       loop_var: outer_item
-
-#  - name: DSCS still known
-#    debug:
-#      msg: "{{ hostvars['localhost'].dscs }}"
-
-#  - name: GCECS still known
-#    debug:
-#      msg: "{{ hostvars['localhost'].gcecs }}"
