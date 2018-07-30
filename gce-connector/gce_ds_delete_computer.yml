@@ -20,5 +20,8 @@
       Content-Type: "application/json"
       api-secret-key: "{{ api_key }}"
       api-version: "v1"
+    status_code:
+      - 200
+      - 204
   register: uri_resp
   failed_when: uri_resp.status != 204 or uri_resp.status != 200
