@@ -1,4 +1,4 @@
-- name: Get ID of to be deleted computers in Deep Security
+- name: Get ID of to be deleted computer from Deep Security
   uri:
     url: "https://{{ dsm_url }}:4119/api/computers/search"
     method: POST
@@ -11,30 +11,14 @@
   register: search_result
   delegate_to: 127.0.0.1
 
-- name: Set computers list fact
-  set_fact:
-    dsc: "{{ search_result.json }}"
-
-- name: Iterate JSON
-  set_fact:
-    ds_computer_item: "{{ item.ID }}"
-  with_items: "{{ dsc.computers }}"
-  register: dsc_list
-
-- name: Create Fact List
-  set_fact:
-    dscs: "{{ dsc_list.results | map(attribute='ansible_facts.ds_computer_item') | list }}"
-
-- name: Print Fact
-  debug: var=dscs
-
 - name: Delete computer in Deep Security
   uri:
-    url: "https://{{ dsm_url }}:4119/api/computers/{{ dscs | to_yaml }}"
+    url: "https://{{ dsm_url }}:4119/api/computers/{{ search_result.json.computers.0.ID }}"
     method: DELETE
     validate_certs: no
-##        body: ' { "maxItems": 5000, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "%{{ project_i$
     headers:
       Content-Type: "application/json"
       api-secret-key: "{{ api_key }}"
       api-version: "v1"
+  register: command_result
+  failed_when: uri_resp.status != 204 or uri_resp.status != 200
