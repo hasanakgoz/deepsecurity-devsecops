@@ -64,4 +64,23 @@
             api-secret-key: "{{ api_key }}"
             api-version: "v1"
         delegate_to: 127.0.0.1
+
+      - name: Tagging 1 if no dsa
+        gce_tag:
+          instance_name: "{{ inventory_hostname }}"
+          zone: "{{ zone }}"
+          project_id: "{{ project_id }}"
+          tags: dsayes
+          state: absent
+        delegate_to: 127.0.0.1
+
+      - name: Tagging 2 if no dsa
+        gce_tag:
+          instance_name: "{{ inventory_hostname }}"
+          zone: "{{ zone }}"
+          project_id: "{{ project_id }}"
+          tags: dsano
+          state: present
+        delegate_to: 127.0.0.1
+
       when: search_result.json.computers == []
