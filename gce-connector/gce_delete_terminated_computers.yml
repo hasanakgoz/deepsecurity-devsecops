@@ -82,9 +82,11 @@
     with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
 
   - name: Get IDs of to be deleted computers in Deep Security and delete the computers
-    include: gce_ds_delete_computer.yml computer={{ item }}
+    include: gce_ds_delete_computer.yml computer={{ outer_item }}
     delegate_to: 127.0.0.1
     with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
+    loop_control:
+      loop_var: outer_item
 
 #  - name: DSCS still known
 #    debug:
