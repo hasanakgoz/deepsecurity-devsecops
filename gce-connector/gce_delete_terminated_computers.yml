@@ -24,7 +24,7 @@
 
   - name: Set computers list fact
     set_fact:
-      computers: "{{ search_result.json.computers }}"
+      computers: "{{ search_result.json }}"
 
   - debug:
       msg: Computers "{{ computers }}"
