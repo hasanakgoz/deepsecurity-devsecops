@@ -21,9 +21,15 @@
     mysql_db:
       name: "{{ mysql_db }}"
       state: present
-  - name: Create mysql user
+  - name: Create mysql user (local)
     mysql_user:
       name: "{{ mysql_user }}"
+      state: "{{ mysql_password }}"
+      priv: '*.*:ALL'
+      state: present
+  - name: Create mysql user (remote)
+    mysql_user:
+      name: "{{ mysql_user }}@'%'"
       state: "{{ mysql_password }}"
       priv: '*.*:ALL'
       state: present
