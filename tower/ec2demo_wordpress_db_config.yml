@@ -28,19 +28,19 @@
       mysql_password: '{{ lookup("env", "mysql_password") }}'
       mysql_address: '{{ lookup("env", "mysql_address") }}'
   tasks:
-  - name: Create wordpress directory
-    file:
-      path: "/var/www/wordpress"
-      state: "directory"
-  - name: Update default Apache site
-    lineinfile:
-      dest: "/etc/apache2/sites-enabled/000-default.conf"
-      regexp: "(.)+DocumentRoot /var/www/html"
-      line: "DocumentRoot /var/www/wordpress"
-  - name: Restart apache2
-    service:
-      name: apache2
-      state: restarted
+#  - name: Create wordpress directory
+#    file:
+#      path: "/var/www/wordpress"
+#      state: "directory"
+#  - name: Update default Apache site
+#    lineinfile:
+#      dest: "/etc/apache2/sites-enabled/000-default.conf"
+#      regexp: "(.)+DocumentRoot /var/www/html"
+#      line: "DocumentRoot /var/www/wordpress"
+#  - name: Restart apache2
+#    service:
+#      name: apache2
+#      state: restarted
 
   - name: Copy sample config file
     copy:
