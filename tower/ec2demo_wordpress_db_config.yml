@@ -24,14 +24,14 @@
   - name: Create mysql user (local)
     mysql_user:
       name: "{{ mysql_user }}"
-      state: "{{ mysql_password }}"
+      password: "{{ mysql_password }}"
       priv: '*.*:ALL'
       state: present
   - name: Create mysql user (remote)
     mysql_user:
       host_all: yes
       name: "{{ mysql_user }}"
-      state: "{{ mysql_password }}"
+      password: "{{ mysql_password }}"
       priv: '*.*:ALL'
       state: present
 
