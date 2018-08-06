@@ -2,9 +2,9 @@
 - hosts: tag_role_database_server
   vars:
     extra_vars:
-      wp_mysql_db: '{{ lookup("env", "wp_mysql_db") }}'
-      wp_mysql_user: '{{ lookup("env", "wp_mysql_user") }}'
-      wp_mysql_password: '{{ lookup("env", "wp_mysql_password") }}'
+      wp_mysql_db: '{{ lookup("env", "mysql_db") }}'
+      wp_mysql_user: '{{ lookup("env", "mysql_user") }}'
+      wp_mysql_password: '{{ lookup("env", "mysql_password") }}'
   tasks:
   - name: Create wordpress database
     mysql_db:
