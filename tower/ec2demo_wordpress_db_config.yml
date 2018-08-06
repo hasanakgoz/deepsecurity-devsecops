@@ -8,6 +8,15 @@
       mysql_password: '{{ lookup("env", "mysql_password") }}'
 
   tasks:
+  - name: Allow remote access to mysqld
+    lineinfile:
+      dest: "/etc/mysql/mysql.conf.d/mysqld.cnf"
+      regexp: "^bind-address"
+      line: "#bind-address = 127.0.0.1"
+  - name: Restart MySQL
+    service:
+      name: mysql
+      state: restarted
   - name: Create wordpress database
     mysql_db:
       name: "{{ mysql_db }}"
