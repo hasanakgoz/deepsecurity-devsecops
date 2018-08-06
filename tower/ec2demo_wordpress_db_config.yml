@@ -59,7 +59,7 @@
       - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ mysql_address }}');"}
   - name: Configure apache site
     copy:
-      dest: "/etc/apache2/site-available/wordpress.conf"
+      dest: "/etc/apache2/sites-available/wordpress.conf"
       content: |
         Alias /blog /usr/share/wordpress
         <Directory /usr/share/wordpress>
