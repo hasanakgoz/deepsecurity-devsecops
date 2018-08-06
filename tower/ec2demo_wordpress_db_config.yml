@@ -19,9 +19,10 @@
 
 - hosts: tag_role_web_server
   vars:
-    wp_mysql_db: "wordpress"
-    wp_mysql_user: "wordpress"
-    wp_mysql_password: "complexpassword"
+    extra_vars:
+      wp_mysql_db: '{{ lookup("env", "mysql_db") }}'
+      wp_mysql_user: '{{ lookup("env", "mysql_user") }}'
+      wp_mysql_password: '{{ lookup("env", "mysql_password") }}'
   tasks:
   - name: Create wordpress directory
     file:
