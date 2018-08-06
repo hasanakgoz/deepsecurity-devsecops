@@ -46,7 +46,7 @@
     copy:
       remote_src: true
       src: "/usr/share/wordpress/wp-config-sample.php"
-      dest: "/var/www/wordpress/wp-config.php"
+      dest: "/etc/wordpress/config-localhost.php"
   - name: Update WordPress config file
     lineinfile:
       dest=/var/www/wordpress/wp-config.php
@@ -57,6 +57,25 @@
       - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{ mysql_user }}');"}
       - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ mysql_password }}');"}
       - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ mysql_address }}');"}
+  - name: Configure apache site
+    copy:
+      dest: "/etc/apache2/site-available/wordpress.conf"
+      content: |
+        Alias /blog /usr/share/wordpress
+        <Directory /usr/share/wordpress>
+            Options FollowSymLinks
+            AllowOverride Limit Options FileInfo
+            DirectoryIndex index.php
+            Order allow,deny
+            Allow from all
+        </Directory>
+        <Directory /usr/share/wordpress/wp-content>
+            Options FollowSymLinks
+            Order allow,deny
+            Allow from all
+        </Directory>
+  - name: Enable Wordpress site
+    command: a2ensite wordpress.conf
   - name: Restart apache2
     service:
       name: apache2
