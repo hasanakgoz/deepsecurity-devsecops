@@ -46,7 +46,7 @@
     copy:
       remote_src: true
       src: "/usr/share/wordpress/wp-config-sample.php"
-      dest: "/etc/wordpress/config-localhost.php"
+      dest: "/etc/wordpress/config-{{ inventory_hostname }}.php"
   - name: Update WordPress config file
     lineinfile:
       dest=/var/www/wordpress/wp-config.php
