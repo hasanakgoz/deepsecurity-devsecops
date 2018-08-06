@@ -1,0 +1,43 @@
+---
+- hosts: tag_role_web-server
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "apache2"
+    apt:
+      name: wordpress
+      state: present
+
+- hosts: tag_role_database
+  tasks:
+  - name: Update repositories cache if the last one is more than 3600 seconds ago
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the latest version of "apache2"
+    apt:
+      name: mysql
+      state: present
+
+- hosts: tag_role_web-server
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: set-policy-by-name
+      policy_name: Ubuntu 16 EC2 Web Server
+    - role: ../roles/deep-security.deep-security-agent
+      operation: update-configuration
+    - role: ../roles/deep-security.deep-security-agent
+      operation: run-recommendation-scans
+
+- hosts: tag_role_database
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: set-policy-by-name
+      policy_name: Ubuntu 16 EC2 Web Server
+    - role: ../roles/deep-security.deep-security-agent
+      operation: update-configuration
+    - role: ../roles/deep-security.deep-security-agent
+      operation: run-recommendation-scans
+      
