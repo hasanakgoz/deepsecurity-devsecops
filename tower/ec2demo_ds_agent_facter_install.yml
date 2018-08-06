@@ -1,0 +1,44 @@
+---
+- hosts: tag_env_demo
+  vars:
+    extra_vars:
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: deploy
+      dsm_agent_download_hostname: "{{ dsm_url }}"
+      dsm_agent_download_port: 4119
+      dsm_agent_activation_hostname: "{{ dsm_url }}"
+      dsm_agent_activation_port: 4120
+      force_reactivation: true
+
+- hosts: tag_env_demo
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: set-policy-by-name
+      policy_name: Ubuntu 16 EC2
+    - role: ../roles/deep-security.deep-security-agent
+      operation: update-configuration
+    - role: ../roles/deep-security.deep-security-agent
+      operation: run-recommendation-scans
+
+- name: Prepare Facter for Deep Security
+  hosts: tag_env_demo
+  tasks:
+  - name: Update APT cache
+    apt:
+      update_cache: yes
+  - name: Install the latest version of "facter"
+    apt:
+      name: facter
+      state: present
+  - name: "Create custom fact directory"
+    file:
+      path: "/etc/ansible/facts.d"
+      state: "directory"
+  - name: "Insert custom fact file"
+    copy:
+      src: ../files/dsa_status.fact
+      dest: /etc/ansible/facts.d/dsa_status.fact
+      mode: 0755
