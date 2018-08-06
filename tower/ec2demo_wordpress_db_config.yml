@@ -1,24 +1,58 @@
 ---
 - hosts: tag_role_database_server
+  vars:
+    extra_vars:
+      wp_mysql_db: '{{ lookup("env", "wp_mysql_db") }}'
+      wp_mysql_user: '{{ lookup("env", "wp_mysql_user") }}'
+      wp_mysql_password: '{{ lookup("env", "wp_mysql_password") }}'
   tasks:
   - name: Create wordpress database
     mysql_db:
-      name: wordpress
+      name: "{{ wp_mysql_db }}"
       state: present
   - name: Create mysql user
     mysql_user:
-      name: wordpress
-      state: wp_db_password
-      priv: *.*:ALL
+      name: "{{ wp_mysql_user }}"
+      state: "{{ wp_mysql_password }}"
+      priv: '*.*:ALL'
+      state: present
 
-#- hosts: tag_role_web_server
-#  tasks:
-#  - name: Update repositories cache if the last one is more than 3600 seconds ago
-#    apt:
-#      update_cache: yes
-#      cache_valid_time: 3600
-#  - name: Install the latest version of "wordpress"
-#    apt:
-#      name: wordpress
-#      state: present
-      
+- hosts: tag_role_web_server
+  vars:
+    wp_mysql_db: "wordpress"
+    wp_mysql_user: "wordpress"
+    wp_mysql_password: "complexpassword"
+  tasks:
+  - name: Create wordpress directory
+    file:
+      path: "/var/www/wordpress"
+      state: "directory"
+  - name: Update default Apache site
+    lineinfile:
+      dest: "/etc/apache2/sites-enabled/000-default.conf"
+      regexp: "(.)+DocumentRoot /var/www/html"
+      line: "DocumentRoot /var/www/wordpress"
+  - name: Restart apache2
+    service:
+      name: apache2
+      state: restarted
+
+  - name: Copy sample config file
+    copy:
+      remote_src: true
+      src: "/usr/share/wordpress/wp-config-sample.php"
+      dest: "/var/www/wordpress/wp-config.php"
+  - name: Update WordPress config file
+    lineinfile:
+      dest=/var/www/wordpress/wp-config.php
+      regexp="{{ item.regexp }}"
+      line="{{ item.line }}"
+    with_items:
+      - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{wp_mysql_db}}');"}
+      - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{wp_mysql_user}}');"}
+      - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{wp_mysql_password}}');"}
+      - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_PASSWORD', '10.200.20.25');"}
+  - name: Restart apache2
+    service:
+      name: apache2
+      state: restarted
