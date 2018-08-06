@@ -7,7 +7,13 @@
       cache_valid_time: 3600
   - name: Install the latest version of "wordpress"
     apt:
-      name: wordpress
+      name:
+        - php7.0
+        - php7.0-mysql
+        - libapache2-mod-php7.0
+        - php7.0-cli
+        - php7.0-gd 
+        - wordpress
       state: present
 
 - hosts: tag_role_database_server
@@ -18,7 +24,9 @@
       cache_valid_time: 3600
   - name: Install the latest version of "mysql-server"
     apt:
-      name: mysql-server
+      name:
+        - mysql-server
+        - python-mysqldb
       state: present
 
 - hosts: tag_role_web_server
