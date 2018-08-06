@@ -1,0 +1,8 @@
+---
+- name: Initiate Recommendation Scans
+  hosts: tag_env_demo
+  roles:
+    - role: ../roles/deep-security.deep-security-agent
+      operation: update-configuration
+    - role: ../roles/deep-security.deep-security-agent
+      operation: run-recommendation-scans
