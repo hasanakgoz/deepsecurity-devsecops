@@ -49,7 +49,7 @@
       dest: "/etc/wordpress/config-{{ inventory_hostname }}.php"
   - name: Update WordPress config file
     lineinfile:
-      dest=/var/www/wordpress/wp-config.php
+      dest="/etc/wordpress/config-{{ inventory_hostname }}.php"
       regexp="{{ item.regexp }}"
       line="{{ item.line }}"
     with_items:
