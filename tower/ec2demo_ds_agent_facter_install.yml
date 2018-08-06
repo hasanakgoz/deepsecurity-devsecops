@@ -1,5 +1,6 @@
 ---
-- hosts: tag_env_demo
+- name: Deploy Deep Security Agent
+  hosts: tag_env_demo
   vars:
     extra_vars:
       dsm_url: '{{ lookup("env", "dsm_url") }}'
@@ -13,7 +14,8 @@
       dsm_agent_activation_port: 4120
       force_reactivation: true
 
-- hosts: tag_env_demo
+- name: Set Ubuntu 16 EC2 policy
+  hosts: tag_env_demo
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
