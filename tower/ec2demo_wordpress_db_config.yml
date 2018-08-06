@@ -1,0 +1,24 @@
+---
+- hosts: tag_role_database_server
+  tasks:
+  - name: Create wordpress database
+    mysql_db:
+      name: wordpress
+      state: present
+  - name: Create mysql user
+    mysql_user:
+      name: wordpress
+      state: wp_db_password
+      priv: *.*:ALL
+
+#- hosts: tag_role_web_server
+#  tasks:
+#  - name: Update repositories cache if the last one is more than 3600 seconds ago
+#    apt:
+#      update_cache: yes
+#      cache_valid_time: 3600
+#  - name: Install the latest version of "wordpress"
+#    apt:
+#      name: wordpress
+#      state: present
+      
