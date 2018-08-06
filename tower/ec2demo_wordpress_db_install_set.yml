@@ -1,5 +1,5 @@
 ---
-- hosts: tag_role_web-server
+- hosts: tag_role_web_server
   tasks:
   - name: Update repositories cache if the last one is more than 3600 seconds ago
     apt:
@@ -10,7 +10,7 @@
       name: wordpress
       state: present
 
-- hosts: tag_role_database
+- hosts: tag_role_database_server
   tasks:
   - name: Update repositories cache if the last one is more than 3600 seconds ago
     apt:
@@ -21,7 +21,7 @@
       name: mysql
       state: present
 
-- hosts: tag_role_web-server
+- hosts: tag_role_web_server
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
@@ -31,11 +31,11 @@
     - role: ../roles/deep-security.deep-security-agent
       operation: run-recommendation-scans
 
-- hosts: tag_role_database
+- hosts: tag_role_database_server
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
-      policy_name: Ubuntu 16 EC2 Web Server
+      policy_name: Ubuntu 16 EC2 Database Server
     - role: ../roles/deep-security.deep-security-agent
       operation: update-configuration
     - role: ../roles/deep-security.deep-security-agent
