@@ -29,7 +29,7 @@
       state: present
   - name: Create mysql user (remote)
     mysql_user:
-      name: "'{{ mysql_user }}'@'%'"
+      name: "{{ mysql_user }}@'%'"
       state: "{{ mysql_password }}"
       priv: '*.*:ALL'
       state: present
