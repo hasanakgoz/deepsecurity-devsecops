@@ -28,7 +28,6 @@
       group: orchestration
       vpc_subnet_id: subnet-0e34f3669e7450aa7
       assign_public_ip: no
-      private_ip: "{{ mysql_address }}"
       instance_tags:
         env: demo
         role: web_server
@@ -51,6 +50,7 @@
       group: orchestration
       vpc_subnet_id: subnet-0e34f3669e7450aa7
       assign_public_ip: no
+      private_ip: "{{ mysql_address }}"
       instance_tags:
         env: demo
         role: database_server
