@@ -1,28 +1,32 @@
 ---
-- hosts: tag_role_database_server
+- name: Prepare MySQL database for Wordpress
+  hosts: tag_role_database_server
   vars:
     extra_vars:
-      wp_mysql_db: '{{ lookup("env", "mysql_db") }}'
-      wp_mysql_user: '{{ lookup("env", "mysql_user") }}'
-      wp_mysql_password: '{{ lookup("env", "mysql_password") }}'
+      mysql_db: '{{ lookup("env", "mysql_db") }}'
+      mysql_user: '{{ lookup("env", "mysql_user") }}'
+      mysql_password: '{{ lookup("env", "mysql_password") }}'
+
   tasks:
   - name: Create wordpress database
     mysql_db:
-      name: "{{ wp_mysql_db }}"
+      name: "{{ mysql_db }}"
       state: present
   - name: Create mysql user
     mysql_user:
-      name: "{{ wp_mysql_user }}"
-      state: "{{ wp_mysql_password }}"
+      name: "{{ mysql_user }}"
+      state: "{{ mysql_password }}"
       priv: '*.*:ALL'
       state: present
 
-- hosts: tag_role_web_server
+- name: Configure Apache2 for Wordpress
+  hosts: tag_role_web_server
   vars:
     extra_vars:
-      wp_mysql_db: '{{ lookup("env", "mysql_db") }}'
-      wp_mysql_user: '{{ lookup("env", "mysql_user") }}'
-      wp_mysql_password: '{{ lookup("env", "mysql_password") }}'
+      mysql_db: '{{ lookup("env", "mysql_db") }}'
+      mysql_user: '{{ lookup("env", "mysql_user") }}'
+      mysql_password: '{{ lookup("env", "mysql_password") }}'
+      mysql_address: '{{ lookup("env", "mysql_address") }}'
   tasks:
   - name: Create wordpress directory
     file:
@@ -49,10 +53,10 @@
       regexp="{{ item.regexp }}"
       line="{{ item.line }}"
     with_items:
-      - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{wp_mysql_db}}');"}
-      - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{wp_mysql_user}}');"}
-      - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{wp_mysql_password}}');"}
-      - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_PASSWORD', '10.200.20.25');"}
+      - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{ mysql_db }}');"}
+      - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{ mysql_user }}');"}
+      - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ mysql_password }}');"}
+      - {'regexp': "define\\('DB_HOST', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ mysql_address }}');"}
   - name: Restart apache2
     service:
       name: apache2
