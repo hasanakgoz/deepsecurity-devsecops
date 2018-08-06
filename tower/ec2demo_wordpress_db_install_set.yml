@@ -30,26 +30,4 @@
         - mysql-server
         - python-mysqldb
       state: present
-
-- name: Set Ubuntu 16 EC2 Web Server policy
-  hosts: tag_role_web_server
-  roles:
-    - role: ../roles/deep-security.deep-security-agent
-      operation: set-policy-by-name
-      policy_name: Ubuntu 16 EC2 Web Server
-    - role: ../roles/deep-security.deep-security-agent
-      operation: update-configuration
-    - role: ../roles/deep-security.deep-security-agent
-      operation: run-recommendation-scans
-
-- name: Set Ubuntu 16 EC2 Database Server policy
-  hosts: tag_role_database_server
-  roles:
-    - role: ../roles/deep-security.deep-security-agent
-      operation: set-policy-by-name
-      policy_name: Ubuntu 16 EC2 Database Server
-    - role: ../roles/deep-security.deep-security-agent
-      operation: update-configuration
-    - role: ../roles/deep-security.deep-security-agent
-      operation: run-recommendation-scans
       
