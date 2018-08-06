@@ -1,5 +1,6 @@
 ---
-- hosts: tag_role_web_server
+- name: Install Wordpress
+  hosts: tag_role_web_server
   tasks:
   - name: Update repositories cache if the last one is more than 3600 seconds ago
     apt:
@@ -16,7 +17,8 @@
         - wordpress
       state: present
 
-- hosts: tag_role_database_server
+- name: Install MySQL database server
+  hosts: tag_role_database_server
   tasks:
   - name: Update repositories cache if the last one is more than 3600 seconds ago
     apt:
@@ -29,7 +31,8 @@
         - python-mysqldb
       state: present
 
-- hosts: tag_role_web_server
+- name: Set Ubuntu 16 EC2 Web Server policy
+  hosts: tag_role_web_server
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
@@ -39,7 +42,8 @@
     - role: ../roles/deep-security.deep-security-agent
       operation: run-recommendation-scans
 
-- hosts: tag_role_database_server
+- name: Set Ubuntu 16 EC2 Database Server policy
+  hosts: tag_role_database_server
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
