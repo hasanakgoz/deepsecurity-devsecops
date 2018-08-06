@@ -32,7 +32,7 @@
         role: web_server
     register: ec2
 
-  - name: Create EC2 Instance Web Server
+  - name: Create EC2 Instance Database Server
     ec2:
       aws_access_key: "{{ aws.access_key }}"
       aws_secret_key: "{{ aws.secret_key }}"

@@ -5,7 +5,7 @@
     apt:
       update_cache: yes
       cache_valid_time: 3600
-  - name: Install the latest version of "apache2"
+  - name: Install the latest version of "wordpress"
     apt:
       name: wordpress
       state: present
@@ -16,7 +16,7 @@
     apt:
       update_cache: yes
       cache_valid_time: 3600
-  - name: Install the latest version of "apache2"
+  - name: Install the latest version of "mysql-server"
     apt:
       name: mysql-server
       state: present
