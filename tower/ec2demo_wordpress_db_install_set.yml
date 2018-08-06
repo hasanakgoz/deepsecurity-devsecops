@@ -18,7 +18,7 @@
       cache_valid_time: 3600
   - name: Install the latest version of "apache2"
     apt:
-      name: mysql
+      name: mysql-server
       state: present
 
 - hosts: tag_role_web_server
