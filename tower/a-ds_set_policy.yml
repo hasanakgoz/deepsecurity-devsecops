@@ -1,5 +1,5 @@
 ---
-- hosts: tag_env_demo
+- hosts: tag_env_tower
   roles:
     - role: ../roles/deep-security.deep-security-agent
       operation: set-policy-by-name
