@@ -18,7 +18,7 @@
         - libapache2-mod-php7.0
         - php7.0-cli
         - php7.0-gd 
-        - wordpress=3.8.2+dfsg-1
+        - wordpress=3.8.2
       state: present
 
 - name: Install MySQL database server
