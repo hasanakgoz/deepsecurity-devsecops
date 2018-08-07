@@ -2,10 +2,10 @@
 - name: Install Wordpress
   hosts: tag_role_web_server
   tasks:
-  - name: Add older source for wordpress
-    lineinfile:
-      dest: "/etc/apt/sources.list"
-      line: "deb http://archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse"
+#  - name: Add older source for wordpress
+#    lineinfile:
+#      dest: "/etc/apt/sources.list"
+#      line: "deb http://archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse"
   - name: Update repositories cache if the last one is more than 3600 seconds ago
     apt:
       update_cache: yes
@@ -18,7 +18,7 @@
         - libapache2-mod-php7.0
         - php7.0-cli
         - php7.0-gd 
-        - wordpress=3.8.2
+        - wordpress
       state: present
 
 - name: Install MySQL database server
