@@ -22,7 +22,7 @@
       aws_secret_key: "{{ aws.secret_key }}"
       key_name: ansible
       region: eu-central-1
-      instance_type: t2.large
+      instance_type: t2.medium
       user_data: |
                  #!/bin/sh
                  echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
