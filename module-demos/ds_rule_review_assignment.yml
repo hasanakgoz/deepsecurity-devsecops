@@ -27,6 +27,6 @@
     with_items: "{{ cvs_query_result.json.rules_covering | difference(status_result.json.rules_covering) }}"
 
 # Sample
-# ansible-playbook s-ds_protection_status.yml --extra-vars '{"dsm_url":"<URL>", "api_key":"<API-KEY>", "hostname":"ubuntu", "query":[CVE-2018-5019, CVE-2018-8236]}'
+# ansible-playbook ds_rule_review_assignment.yml --extra-vars '{"dsm_url":"<URL>", "api_key":"<API-KEY>", "hostname":"ubuntu", "query":[CVE-2018-5019, CVE-2018-8236]}'
 #
 # "item": "1009207"
