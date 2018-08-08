@@ -1,7 +1,5 @@
 
-files/.DS_Store
-kube-cluster/.DS_Store
 vars/secrets.yml
-.DS_Store
-tower/awx error because of requirements.txt
+*.DS_Store
 gce-connector/scratch.json
+*.retry
