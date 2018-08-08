@@ -28,7 +28,7 @@ options:
         required: true
     api_key:
         description:
-            - The API Key to access the Deep Security REST APPI
+            - The API Key to access the Deep Security REST API
 
 author:
     - Markus Winkler (markus_winkler@trendmicro.com)
