@@ -48,7 +48,7 @@ EXAMPLES = '''
 # Shell example
 ansible-playbook ds_query_cves.yml --extra-vars '{"dsm_url":"<URL>",
                                                   "api_key":"<API-KEY>",
-                                                  "query":[CVE-2005-0435, CVE-2004-1315]}'  
+                                                  "query":[CVE-2018-5019, CVE-2018-8236]}'  
 '''
 
 RETURN = '''
@@ -63,8 +63,8 @@ ds_query_cves:
                 "cves_matched": 2,
                 "cves_unmatched": 0,
                 "rules_covering": [
-                    "1000128",
-                    "1000095"
+                    "1009137",
+                    "1009207"
                 ]
             }
         },
