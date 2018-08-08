@@ -7,20 +7,22 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = '''
 ---
-module: ds_protection_status
+module: ds_query_cves_cached
 
-short_description: Retrieves the current protection status of a computer
+short_description: Retrieves IPS rule identifiers coverering a given list of CVEs
 
 version_added: "2.6"
 
 description:
-    - "This module retrieves the current protection status of a computer
-       along with the list of rule IDs which are covering the CVEs"
+    - "This module retrieves IPS rule identifiers to protect against a list of
+       CVEs. The results includes the number of covered and uncovered CVEs.
+       This module is suitable for long lists of CVEs because of it's
+       internal IPS rule cache."
 
 options:
-    hostname:
+    query:
         description:
-            - The hostname to be queried
+            - The list of CVEs to be checked
         required: true
     dsm_url:
         description:
@@ -35,32 +37,36 @@ author:
 '''
 
 EXAMPLES = '''
-# Retriece covered CVEs and rules covering
-- name: Query Deep Security Protection Status
-  ds_protection_status:
-    hostname: "dockerhost.example.com"
-    dsm_url: "https://{{ deepsecurity_manager }}:4119"
-    api_key: "{{ deepsecurity_api_key }}"
+# Retrieve IPS rule identifiers coverering a given list of CVEs
+- name: Query Deep Security for IPS rule identifieres matching a list of CVEs
+  ds_query_cves:
+    query: "{{ query }}"
+    dsm_url: "https://{{ dsm_url }}:4119"
+    api_key: "{{ api_key }}"
   register: ds_result
+
+# Shell example
+ansible-playbook ds_query_cves.yml --extra-vars '{"dsm_url":"<URL>",
+                                                  "api_key":"<API-KEY>",
+                                                  "query":[CVE-2018-5019, CVE-2018-8236]}'  
 '''
 
 RETURN = '''
-ds_protection_status:
-    description: The current protection status realized with the HIPS module
+ds_query_cves:
+    description: The list of IPS rules covering a list of CVEs
     type: dict
     sample:
         "changed": false,
         "failed": false,
         "json": {
-            "cves_covered": [
-                "CVE-2015-1716",
-                "CVE-2015-4000",
-                "CVE-2016-8858"
-            ],
-            "rules_covering": [
-                3712,
-                5555
-            ]
+            "msg": {
+                "cves_matched": 2,
+                "cves_unmatched": 0,
+                "rules_covering": [
+                    "1009137",
+                    "1009207"
+                ]
+            }
         },
         "message": ""
 '''
@@ -124,7 +130,7 @@ def run_module():
 
     # Argument & parameter definitions
     module_args = dict(
-        hostname=dict(type='str', required=True),
+        query=dict(type='list', required=True),
         dsm_url=dict(type='str', required=True),
         api_key=dict(type='str', required=True)
     )
@@ -158,33 +164,35 @@ def run_module():
     except KeyError as e:
         module.fail_json(msg=e.message, **result)
 
-    # Retrieve requested computer object
-    url = module.params['dsm_url'] + "/api/computers/search"
-    data = { "maxItems": 1,
-             "searchCriteria": [ { "fieldName": "hostName",
-                                   "stringTest": "equal",
-                                   "stringValue": "%" + module.params['hostname'] + "%",
-                                   "stringWildcards": "true" } ] }
-    post_header = { "Content-type": "application/json",
-                    "api-secret-key": module.params['api_key'],
-                    "api-version": "v1"}
-    computer = requests.post(url, data=json.dumps(data), headers=post_header, verify=False).json()
-    computer_attributes = computer['computers']
-
-    # Populate result set with covered CVEs and rule IDs covering
-    cves = set()
+    # Retrieves intrusion prevention rules based on a list of given CVEs
     rules = set()
-    for attribute in computer_attributes:
-        for ruleID in attribute['intrusionPrevention']['ruleIDs']:
-            if str(ruleID) in rules_cves:
-                # Update result set with ruleID
-                rules.update([ruleID])
-                # Update result set with CVEs covered
-                cves.update(rules_cves[str(ruleID)])
+    match_counter = 0
+    unmatch_counter = len(module.params['query'])
+
+    for cve in module.params['query']:
+        matched = False
+        for rule in rules_cves:
+            if str(cve) in rules_cves[str(rule)]:
+                # Query rule identifier
+                url = module.params['dsm_url'] + "/api/intrusionpreventionrules/search"
+                data = { "maxItems": 1,
+                         "searchCriteria": [ { "fieldName": "ID",
+                                               "idTest": "equal",
+                                               "idValue": str(rule) } ] }
+                post_header = { "Content-type": "application/json",
+                                "api-secret-key": module.params['api_key'],
+                                "api-version": "v1"}
+                response = requests.post(url, data=json.dumps(data), headers=post_header, verify=False).json()
+                rules.add(response['intrusionPreventionRules'][0]['identifier'])
+                if (matched == False):
+                    match_counter += 1
+                    unmatch_counter -= 1
+                    matched = True
 
     # Populate result set
-    result['json'] = { "cves_covered": cves,
-                       "rules_covering": rules }
+    result['json'] = { "rules_covering": rules,
+                       "cves_matched": match_counter,
+                       "cves_unmatched": unmatch_counter }
 
     # We didn't change anything on the host
     result['changed'] = False
