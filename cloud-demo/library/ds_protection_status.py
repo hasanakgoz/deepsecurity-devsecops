@@ -28,7 +28,7 @@ options:
         required: true
     api_key:
         description:
-            - The API Key to access the Deep Security REST APPI
+            - The API Key to access the Deep Security REST API
 
 author:
     - Markus Winkler (markus_winkler@trendmicro.com)
@@ -83,6 +83,7 @@ def build_rules_cves_map(dsm_url, api_key):
 
     # Return dictionary
     rules_cves = {}
+    rules_id = {}
 
     for i in range(0, MAX_RULE_ID, RESULT_SET_SIZE):
         url = dsm_url + "/api/intrusionpreventionrules/search"
@@ -116,7 +117,7 @@ def build_rules_cves_map(dsm_url, api_key):
                     cves.add(str(cve.strip()))
 
             cves = sorted(cves)
-            rules_cves[str(rule['ID']).strip()] = cves
+            rules_cves[str(rule['ID']).strip()] = { "identifier": str(rule['identifier']).strip(), "cves": cves}
 
     return rules_cves
 
@@ -151,6 +152,7 @@ def run_module():
     #
     # Build intrusion prevention ips rules CVEs dictionary
     rules_cves = {}
+
     try:
         rules_cves = build_rules_cves_map(module.params['dsm_url'], module.params['api_key'])
     except ValueError as e:
@@ -178,9 +180,9 @@ def run_module():
         for ruleID in attribute['intrusionPrevention']['ruleIDs']:
             if str(ruleID) in rules_cves:
                 # Update result set with ruleID
-                rules.update([ruleID])
+                rules.add(rules_cves[str(ruleID)]['identifier'])
                 # Update result set with CVEs covered
-                cves.update(rules_cves[str(ruleID)])
+                cves.update(rules_cves[str(ruleID)]['cves'])
 
     # Populate result set
     result['json'] = { "cves_covered": cves,
