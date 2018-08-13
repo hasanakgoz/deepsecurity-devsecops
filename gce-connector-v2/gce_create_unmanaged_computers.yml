@@ -1,0 +1,120 @@
+---
+- name: Deep Security
+  gather_facts: no
+  hosts: all
+  vars:
+    extra_vars:
+      zone: '{{ lookup("env", "zone" }}'
+      project_id: '{{lookup("env", "project_id" }}'
+      dsm_url: '{{ lookup("env", "dsm_url") }}'
+      api_key: '{{ lookup("env", "api_key") }}'
+      group_id: 84
+  tasks:
+  - name: Test for installed DSA
+    stat:
+      path: /opt/ds_agent/dsa_control
+    register: stat_result
+
+  - block:
+    - name: Get FQDN of host
+      shell: hostname -f
+      register: fqdn_raw
+
+    - name: Set FQDN fact
+      set_fact:
+        fqdn: "{{ fqdn_raw.stdout_lines[0] }}"
+
+    - name: Create Computer Object in Deep Security
+      ds:
+        hostname: "{{ fqdn }}"
+        state: present
+        group_id: "{{ group_id }}"
+        dsm_url: "https://{{ dsm_url }}:4119"
+        api_key: "{{ api_key }}"
+      register: ds_result
+
+    - name: Did we create a computer
+      debug:
+        msg: "{{ ds_result }}"
+
+    - name: Tagging 1 if no dsa
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsayes
+        state: absent
+      delegate_to: 127.0.0.1
+      when: ds_result.changed == "true"
+
+    - name: Tagging 2 if no dsa
+      gce_tag:
+        instance_name: "{{ inventory_hostname }}"
+        zone: "{{ zone }}"
+        project_id: "{{ project_id }}"
+        tags: dsano
+        state: present
+      delegate_to: 127.0.0.1
+      when: ds_result.changed == "true"
+
+
+
+    # - name: Test for computer already exists in DS
+    #   uri:
+    #     url: "https://{{ dsm_url }}:4119/api/computers/search"
+    #     method: POST
+    #     validate_certs: no
+    #     body: ' { "maxItems": 1, "searchCriteria": [ { "fieldName": "hostName", "stringTest": "equal", "stringValue": "{{ fqdn }}" } ] }'
+    #     headers:
+    #       Content-Type: "application/json"
+    #       api-secret-key: "{{ api_key }}"
+    #       api-version: "v1"
+    #   register: search_result
+    #   delegate_to: 127.0.0.1
+
+    # - block:
+    #   - name: Get FQDN of host
+    #     shell: hostname -f
+    #     register: fqdn_raw
+
+    #   - debug:
+    #       msg: fqdn "{{ fqdn_raw }}"
+
+    #   - name: Set FQDN fact
+    #     set_fact:
+    #       fqdn: "{{ fqdn_raw.stdout_lines[0] }}"
+
+    #   - debug:
+    #       msg: computer zone "{{ gce_zone }}"
+
+    #   - name: Create computer in DS
+    #     uri:
+    #       url: "https://{{ dsm_url }}:4119/api/computers"
+    #       method: POST
+    #       validate_certs: no
+    #       body: ' { "hostName": "{{ fqdn }}", "description": "Created by Ansible ({{ gce_zone }})", "groupID": 84 }'
+    #       headers:
+    #         Content-Type: "application/json"
+    #         api-secret-key: "{{ api_key }}"
+    #         api-version: "v1"
+    #     delegate_to: 127.0.0.1
+
+    #   - name: Tagging 1 if no dsa
+    #     gce_tag:
+    #       instance_name: "{{ inventory_hostname }}"
+    #       zone: "{{ zone }}"
+    #       project_id: "{{ project_id }}"
+    #       tags: dsayes
+    #       state: absent
+    #     delegate_to: 127.0.0.1
+
+    #   - name: Tagging 2 if no dsa
+    #     gce_tag:
+    #       instance_name: "{{ inventory_hostname }}"
+    #       zone: "{{ zone }}"
+    #       project_id: "{{ project_id }}"
+    #       tags: dsano
+    #       state: present
+    #     delegate_to: 127.0.0.1
+
+    #   when: search_result.json.computers == []
