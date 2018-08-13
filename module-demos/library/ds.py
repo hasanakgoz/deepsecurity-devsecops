@@ -189,7 +189,7 @@ def run_module():
     #
     # Module logic
     #
-    # Build intrusion prevention ips rules CVEs dictionary
+    # Choose between absent or present and execute
     task_result = 0
     if module.params['state'] == 'present':
         task_result = computer_present(module.params['hostname'], module.params['group_id'], module.params['dsm_url'], module.params['api_key'])

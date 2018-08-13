@@ -43,7 +43,7 @@ author:
 '''
 
 EXAMPLES = '''
-# Retriece covered CVEs and rules covering
+# Ensure computer to be present or absent within Deep Security
 - name: Deletes computer within Deep Security
   ds:
     hostname: "terminated.example.com"
@@ -63,25 +63,11 @@ EXAMPLES = '''
 
 RETURN = '''
 ds_protection_status:
-
-UPDATE!!!
-
-    description: The current protection status realized with the HIPS module
+    description: Returns changed true or false if a change within Deep Security was made
     type: dict
     sample:
         "changed": true,
         "failed": false,
-        "json": {
-            "cves_covered": [
-                "CVE-2015-1716",
-                "CVE-2015-4000",
-                "CVE-2016-8858"
-            ],
-            "rules_covering": [
-                3712,
-                5555
-            ]
-        },
         "message": ""
 '''
 
@@ -106,14 +92,15 @@ def search_computer(hostname, dsm_url, api_key):
                     "api-version": "v1"}
     response = requests.post(url, data=json.dumps(data), headers=post_header, verify=False).json()
 
-    raise ValueError(response)
-
-    computer_id = 0
-
     # Error handling
     if 'message' in response:
         if response['message'] == "Invalid API Key":
             raise ValueError("Invalid API Key")
+
+    computer_id = -1
+    if len(response['computers']) > 0:
+        if 'ID' in response['computers'][0]:
+            computer_id = response['computers'][0]['ID']
 
     return computer_id
 
@@ -122,7 +109,10 @@ def computer_present(hostname, group_id, dsm_url, api_key):
     Ensure computer to be present
     '''
 
-    if search_computer(hostname, dsm_url, api_key) >= 0:
+    computer_id = search_computer(hostname, dsm_url, api_key)
+
+    if computer_id < 0:
+
         url = dsm_url + "/api/computers"
         data = { "hostName": hostname, "description": "Created by Ansible", "groupID": group_id }
         post_header = { "Content-type": "application/json",
@@ -136,26 +126,26 @@ def computer_present(hostname, group_id, dsm_url, api_key):
                 raise ValueError("Invalid API Key")
 
         # Computer created
-        return 200
+        return 201
 
     # Computer already present
-    return 201
+    return 200
 
 def computer_absent(hostname, dsm_url, api_key):
     '''
-    Ensure computer to be present
+    Ensure computer to be absent
     '''
 
-    computer_id = search_computer(hostname, group_id, dsm_url, api_key)
+    computer_id = search_computer(hostname, dsm_url, api_key)
 
     if computer_id >= 0:
 
-        url = dsm_url + "/api/computers/" + computer_id
+        url = dsm_url + "/api/computers/" + str(computer_id)
         data = { }
         post_header = { "Content-type": "application/json",
                         "api-secret-key": api_key,
                         "api-version": "v1"}
-        response = requests.delete(url, data=json.dumps(data), headers=post_header, verify=False).json()
+        response = requests.delete(url, data=json.dumps(data), headers=post_header, verify=False) #.json()
 
         # Error handling
         if 'message' in response:
@@ -163,10 +153,10 @@ def computer_absent(hostname, dsm_url, api_key):
                 raise ValueError("Invalid API Key")
 
         # Computer deleted
-        return 200
+        return 201
 
     # Computer already absent
-    return 201
+    return 200
 
 def run_module():
 
@@ -199,13 +189,13 @@ def run_module():
     #
     # Module logic
     #
-    # Build intrusion prevention ips rules CVEs dictionary
+    # Choose between absent or present and execute
     task_result = 0
     if module.params['state'] == 'present':
         task_result = computer_present(module.params['hostname'], module.params['group_id'], module.params['dsm_url'], module.params['api_key'])
     elif module.params['state'] == 'absent':
         task_result = computer_absent(module.params['hostname'], module.params['dsm_url'], module.params['api_key'])
-    else
+    else:
         module.fail_json(msg="allowed states present or absent", **result)
 
     # Populate result set
@@ -213,7 +203,7 @@ def run_module():
     # We didn't change anything on the host
     if task_result == 200:
         result['changed'] = False
-    else
+    else:
         result['changed'] = True
 
     # Return key/value results
