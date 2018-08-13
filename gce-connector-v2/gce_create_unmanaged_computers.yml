@@ -6,9 +6,9 @@
     extra_vars:
       zone: '{{ lookup("env", "zone" }}'
       project_id: '{{lookup("env", "project_id" }}'
+      group_id: '{{ lookup("env", "group_id" }}'
       dsm_url: '{{ lookup("env", "dsm_url") }}'
       api_key: '{{ lookup("env", "api_key") }}'
-      group_id: 84
   tasks:
   - name: Test for installed DSA
     stat:
