@@ -14,6 +14,7 @@
       dsm_url: "https://{{ dsm_url }}:4119"
       api_key: "{{ api_key }}"
     register: cvs_query_result
+    delegate_to: localhost
 
   - name: Query Deep Security Protection Status
     ds_protection_status:
@@ -21,12 +22,16 @@
       dsm_url: "https://{{ dsm_url }}:4119"
       api_key: "{{ api_key }}"
     register: status_result
+    delegate_to: localhost
 
   - name: Rules to review and potentially assign
-    debug: var=item
-    with_items: "{{ cvs_query_result.json.rules_covering | difference(status_result.json.rules_covering) }}"
+    debug:
+      msg: "{{ cvs_query_result.json.rules_covering | difference(status_result.json.rules_covering) }}"
 
 # Sample
-# ansible-playbook ds_rule_review_assignment.yml --extra-vars '{"dsm_url":"<URL>", "api_key":"<API-KEY>", "hostname":"ubuntu", "query":[CVE-2018-5019, CVE-2018-8236]}'
+# ansible-playbook ds_rule_review_assignment.yml --extra-vars '{"dsm_url":"<URL>", "api_key":"<API-KEY>", "hostname":"ubuntu", "query":[CVE-2017-8779]}'
 #
-# "item": "1009207"
+#     "msg": [
+#         "1008371",
+#         "1008315"
+#      ]
