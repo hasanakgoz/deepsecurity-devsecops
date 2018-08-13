@@ -36,9 +36,6 @@
     set_fact:
       dscs: "{{ dsc_list.results | map(attribute='ansible_facts.ds_computer_item') | list }}"
 
-#  - name: Print Fact
-#    debug: var=dscs
-
 - name: Query GCE inventory for DS registered project hosts
   gather_facts: no
   hosts: localhost
@@ -64,9 +61,6 @@
     set_fact:
       gcecs: "{{ gcec_list.results | map(attribute='ansible_facts.gce_computer_item') | list }}"
 
-#  - name: Print Fact
-#    debug: var=gcecs
-
 - name: Delete non-existing computers from Deep Security
   gather_facts: no
   hosts: localhost
@@ -87,7 +81,6 @@
       state: absent
       dsm_url: "https://{{ dsm_url }}:4119"
       api_key: "{{ api_key }}"
-#    include: gce_ds_delete_computer.yml computer={{ outer_item }}
     delegate_to: 127.0.0.1
     with_items: "{{ hostvars['localhost'].dscs | difference(hostvars['localhost'].gcecs) }}"
     loop_control:
