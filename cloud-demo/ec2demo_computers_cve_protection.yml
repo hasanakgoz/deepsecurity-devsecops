@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: tag_env_demo
   gather_facts: no
   vars:
     extra_vars:
