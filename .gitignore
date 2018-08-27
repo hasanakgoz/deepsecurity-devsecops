@@ -3,3 +3,6 @@ vars/secrets.yml
 *.DS_Store
 gce-connector/scratch.json
 *.retry
+smartcheck/connect-holonet-mb.sh
+smartcheck/connect-awslab.sh
+smartcheck/connect-holonet.sh
