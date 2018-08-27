@@ -1,0 +1,31 @@
+---
+- hosts: tag_role_kube_masternode
+  gather_facts: false
+  tasks:
+    - name: Download helm sources
+      get_url: 
+        url: https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
+        dest: /tmp
+
+    - name: Extract helm into /tmp
+      unarchive:
+        src: /tmp/helm-v2.9.1-linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: yes
+
+    - name: Copy helm binary to /usr/local/bin
+      copy:
+        src: /tmp/linux-amd64/helm
+        dest: /usr/local/bin/helm
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
+
+- hosts: tag_role_kube_masternode
+  become: yes
+  become_user: ubuntu
+  gather_facts: false
+  tasks:
+    - name: Initialize helm
+      shell: helm init
