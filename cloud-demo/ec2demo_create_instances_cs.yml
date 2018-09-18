@@ -28,7 +28,7 @@
       count: 1
       group_id: sg-04a5bc8fc89c29010
       vpc_subnet_id: subnet-04701324bfeaeec0a
-      assign_public_ip: no
+      assign_public_ip: yes
       private_ip: "{{ webserver_address }}"
       instance_tags:
         env: demo
@@ -51,7 +51,7 @@
       count: 1
       group_id: sg-04a5bc8fc89c29010
       vpc_subnet_id: subnet-04701324bfeaeec0a
-      assign_public_ip: no
+      assign_public_ip: yes
       private_ip: "{{ mysql_address }}"
       instance_tags:
         env: demo
