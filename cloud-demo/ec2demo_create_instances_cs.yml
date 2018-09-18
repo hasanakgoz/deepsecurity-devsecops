@@ -1,0 +1,59 @@
+---
+- name: Create EC2 instance
+  hosts: localhost
+  gather_facts: False
+  vars:
+    aws:
+      access_key: '{{ lookup("env", "AWS_ACCESS_KEY_ID") }}'
+      secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
+    extra_vars:
+      id_rsa_pub: '{{ lookup("env", "id_rsa_pub") }}'
+      mysql_address: '{{ lookup("env", "mysql_address") }}'
+      webserver_address: '{{ lookup("env", "webserver_address") }}'
+
+  tasks:
+  - name: Create EC2 Instance Web Server
+    ec2:
+      aws_access_key: "{{ aws.access_key }}"
+      aws_secret_key: "{{ aws.secret_key }}"
+      key_name: ansible
+      region: eu-central-1
+      instance_type: t2.micro
+      user_data: |
+                 #!/bin/sh
+                 echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt install -y python python-simplejson
+      image: ami-5055cd3f
+      wait: true
+      count: 1
+      group_id: sg-04a5bc8fc89c29010
+      vpc_subnet_id: subnet-04701324bfeaeec0a
+      assign_public_ip: yes
+      private_ip: "{{ webserver_address }}"
+      instance_tags:
+        env: demo
+        role: web_server
+    register: ec2
+
+  - name: Create EC2 Instance Database Server
+    ec2:
+      aws_access_key: "{{ aws.access_key }}"
+      aws_secret_key: "{{ aws.secret_key }}"
+      key_name: ansible
+      region: eu-central-1
+      instance_type: t2.micro
+      user_data: |
+                 #!/bin/sh
+                 echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt install -y python python-simplejson
+      image: ami-5055cd3f
+      wait: true
+      count: 1
+      group_id: sg-04a5bc8fc89c29010
+      vpc_subnet_id: subnet-0f3605e88785a43f0
+      assign_public_ip: no
+      private_ip: "{{ mysql_address }}"
+      instance_tags:
+        env: demo
+        role: database_server
+    register: ec2
