@@ -49,10 +49,10 @@
     copy:
       remote_src: true
       src: "/usr/share/wordpress/wp-config-sample.php"
-      dest: "/etc/wordpress/config-{{ hostvars[inventory_hostname]['ansible_default_ipv4'] }}.php"
+      dest: "/etc/wordpress/config-{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.php"
   - name: Update WordPress config file
     lineinfile:
-      dest="/etc/wordpress/config-{{ hostvars[inventory_hostname]['ansible_default_ipv4'] }}.php"
+      dest="/etc/wordpress/config-{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.php"
       regexp="{{ item.regexp }}"
       line="{{ item.line }}"
     with_items:
