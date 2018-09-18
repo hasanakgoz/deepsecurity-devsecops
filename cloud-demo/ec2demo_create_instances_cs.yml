@@ -50,7 +50,7 @@
       wait: true
       count: 1
       group_id: sg-04a5bc8fc89c29010
-      vpc_subnet_id: subnet-0f3605e88785a43f0
+      vpc_subnet_id: subnet-04701324bfeaeec0a
       assign_public_ip: no
       private_ip: "{{ mysql_address }}"
       instance_tags:
