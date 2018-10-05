@@ -13,7 +13,6 @@
       set_fact:
         join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
-#- hosts: tag_role_kube_masternode, tag_role_kube_workernode
 - hosts: tag_role_kube_workernode
   become: yes
   tasks:

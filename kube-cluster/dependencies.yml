@@ -1,18 +1,15 @@
 - hosts: tag_role_kube_masternode, tag_role_kube_workernode
   become: yes
   tasks:
-   - name: install Docker
+   - name: install Docker, APT Transport HTTPS
      apt:
-       name: docker.io
+       name:
+         - docker.io=17.03.2-0ubuntu2~16.04.1
+         - apt-transport-https
        state: present
        update_cache: true
 
-   - name: install APT Transport HTTPS
-     apt:
-       name: apt-transport-https
-       state: present
-
-   - name: add Kubernetes apt-key
+   - name: add Kubernetes' apt-key
      apt_key:
        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
        state: present
@@ -25,19 +22,17 @@
 
    - name: install kubelet
      apt:
-       name: kubelet=1.11.3-00
+       name:
+         - kubelet=1.11.3-00
+         - kubectl=1.11.3-00
+         - kubeadm=1.11.3-00
        state: present
        update_cache: true
 
-   - name: install kubeadm
-     apt:
-       name: kubeadm=1.11.3-00
-       state: present
-
-- hosts: tag_role_kube_masternode
-  become: yes
-  tasks:
-   - name: install kubectl
-     apt:
-       name: kubectl=1.11.3-00
-       state: present
+#- hosts: tag_role_kube_masternode
+#  become: yes
+#  tasks:
+#   - name: install kubectl
+#     apt:
+#       name: kubectl=1.11.3-00
+#       state: present
