@@ -14,17 +14,13 @@
         join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
 - hosts: tag_role_kube_workernode
+  vars:
+    extra_vars:
+      kube_masternode_ip: '{{ lookup("env", "kube_masternode_ip") }}'
   become: yes
   tasks:
-#    - name: get masternode ip
-#      var:
-#        masternode_ip: inventory_hostname
-#      tags: tag_role_kube_masternode
-
     - name: join cluster
-      shell: "{{ hostvars['10.200.20.60'].join_command }} >> node_joined.txt"
-#      shell: "{{ inventory_hostname.join_command }} >> node_joined.txt"
+      shell: "{{ hostvars['{{ kube_masternode_ip }}'].join_command }} >> node_joined.txt"
       args:
         chdir: $HOME
         creates: node_joined.txt
-#      tags: tag_role_kube_workernode
