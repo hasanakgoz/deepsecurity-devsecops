@@ -31,7 +31,7 @@
 
    - name: install kubeadm
      apt:
-       name: kubeadm
+       name: kubeadm=1.11.3-00
        state: present
 
 - hosts: tag_role_kube_masternode
@@ -39,5 +39,5 @@
   tasks:
    - name: install kubectl
      apt:
-       name: kubectl
+       name: kubectl=1.11.3-00
        state: present
