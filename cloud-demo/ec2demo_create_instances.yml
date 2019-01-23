@@ -22,6 +22,7 @@
       user_data: |
                  #!/bin/sh
                  echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt update
                  apt install -y python python-simplejson
       image: ami-5055cd3f
       wait: true
@@ -45,6 +46,7 @@
       user_data: |
                  #!/bin/sh
                  echo "{{ id_rsa_pub }}" > /root/.ssh/authorized_keys
+                 apt update
                  apt install -y python python-simplejson
       image: ami-5055cd3f
       wait: true
