@@ -1,0 +1,56 @@
+---
+- name: Deploy Deep Security Manager
+  hosts: dsm2
+  become: yes
+  vars:
+    addressandportsscreen_manageraddress: '<MANAGER ADDRESS>'
+    addressandportsscreen_newnode: True
+    upgradeverificationscreen_overwrite: False
+    licensescreen_license: '<LICENSE KEY>'
+    databasescreen_databasetype: 'PostgreSQL'
+    databasescreen_hostname: '<PostgreSQL ADDRESS>'
+    databasescreen_transport: 'TCP'
+    databasescreen_databasename: '<DATABASE NAME>'
+    databasescreen_username: '<DATABASE USERNAME>'
+    databasescreen_password: '<DATABASE PASSWORD>'
+    addressandportsscreen_managerport: 4119
+    addressandportsscreen_heartbeatport: 4120
+    credentialsscreen_administrator_username: '<USERNAME>'
+    credentialsscreen_administrator_password: '<PASSWORD>'
+    credentialsscreen_usestrongpasswords: False
+    securityupdatescreen_updatecomponents: True
+    securityupdatescreen_proxy: False
+    securityupdatescreen_proxytype: ''
+    securityupdatescreen_proxyaddress: ''
+    securityupdatescreen_proxyport: ''
+    securityupdatescreen_proxyauthentication: False
+    securityupdatescreen_proxyusername: ''
+    securityupdatescreen_proxypassword: ''
+    softwareupdatescreen_updatesoftware: True
+    softwareupdatescreen_proxy: False
+    softwareupdatescreen_proxytype: ''
+    softwareupdatescreen_proxyaddress: ''
+    softwareupdatescreen_proxyport: ''
+    softwareupdatescreen_proxyauthentication: False
+    softwareupdatescreen_proxyusername: ''
+    softwareupdatescreen_proxypassword: ''
+    softwareupdatescreen_proxyauthentication: False
+    relayscreen_install: True
+    smartprotectionnetworkscreen_enablefeedback: True
+    dsm_download_url: 'https://files.trendmicro.com/products/deepsecurity/en/11.3/'
+    dsm_installer: 'Manager-Linux-11.3.184.x64.sh'
+  tasks:
+    - name: Create DSM configuration file
+      template:
+        src: dsm.j2
+        dest: /home/ansible/dsm.properties
+    - name: Download DSM installation script
+      get_url:
+        url: "{{ dsm_download_url }}{{ dsm_installer }}"
+        dest: "/home/ansible/{{ dsm_installer }}"
+        mode: 0755
+    - name: Install DSM
+      shell: "/home/ansible/{{ dsm_installer }} -q -varfile /home/ansible/dsm.properties >> /home/ansible/dsm_install_log.txt"
+      args:
+        chdir: $HOME
+        creates: dsm_install_log.txt
